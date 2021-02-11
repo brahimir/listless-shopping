@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "vue-cli-service serve",
+    "start": "vue-cli-service serve --port 1901",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
@@ -26,7 +26,6 @@
     "@vue/eslint-config-typescript": "^5.1.0",
     "eslint": "^6.8.0",
     "eslint-plugin-prettier": "^3.3.1",
-    "eslint-plugin-vue": "^6.2.2",
     "prettier": "^1.19.1",
     "sass": "^1.32.7",
     "sass-loader": "^8.0.2",
