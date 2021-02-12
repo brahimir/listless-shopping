@@ -18,6 +18,7 @@ export default Vue.extend({
 
   data: () => ({
     icons: ["mdi-arrow-up"],
+    // Footer position
     variant: "fixed" // absolute, default
   })
 });
