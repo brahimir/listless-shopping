@@ -1,23 +1,21 @@
 <template>
   <v-app>
-    <!-- start:: AppBar -->
+    <!-- AppBar -->
     <AppBar />
-    <!-- end:: AppBar -->
 
-    <!-- start:: Main Content -->
+    <!-- Main Content -->
     <v-main>
       <router-view />
     </v-main>
-    <!-- end:: Main Content -->
 
-    <!-- start:: Footer -->
+    <!-- Footer -->
     <Footer />
-    <!-- end:: Footer -->
   </v-app>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
+// Components
 import AppBar from "@/components/layout/AppBar.vue";
 import Footer from "@/components/layout/Footer.vue";
 
