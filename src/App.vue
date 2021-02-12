@@ -1,15 +1,24 @@
+<style lang="scss">
+@import "assets/sass/style.vue";
+</style>
+
 <template>
   <v-app>
-    <!-- AppBar -->
+    <!-- start:: AppBar -->
     <AppBar />
+    <!-- end:: AppBar -->
 
-    <!-- Main Content -->
+    <!-- start:: Content -->
     <v-main>
-      <router-view />
+      <div class="container">
+        <router-view />
+      </div>
     </v-main>
+    <!-- end:: Content -->
 
-    <!-- Footer -->
+    <!-- start:: Footer -->
     <Footer />
+    <!-- end:: Footer -->
   </v-app>
 </template>
 

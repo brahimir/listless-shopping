@@ -6,14 +6,14 @@ Vue.use(Router);
 export default new Router({
   routes: [
     {
-      path: "/",
+      path: "/home",
       name: "Home",
-      component: () => import("./views/Home.vue")
+      component: () => import("./views/pages/Home.vue")
     },
     {
       path: "/about",
       name: "About",
-      component: () => import("./views/About.vue")
+      component: () => import("./views/pages/About.vue")
     }
   ]
 });
