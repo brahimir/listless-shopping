@@ -9,10 +9,8 @@
     <v-card flat tile width="100%" class="light lighten-1 text-center">
       <v-divider></v-divider>
 
-      <v-card-text>
-        <router-link class="text-decoration-none" to="/about">
-          <span id="about" class="ll-white">About</span>
-        </router-link>
+      <v-card-text class="white--text">
+        {{ new Date().getFullYear() }} — list<strong>less</strong>
       </v-card-text>
     </v-card>
   </v-footer>

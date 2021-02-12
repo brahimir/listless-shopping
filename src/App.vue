@@ -10,7 +10,7 @@
 
     <!-- start:: Content -->
     <v-main>
-      <div class="container">
+      <div class="container my-10">
         <router-view />
       </div>
     </v-main>
