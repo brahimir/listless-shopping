@@ -21,10 +21,16 @@
 
       <!-- start:: AsideDrawer -->
       <v-navigation-drawer v-model="toggleDrawer" app temporary absolute right>
+        <!-- start:: Navigation -->
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title>navigation</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <v-divider></v-divider>
 
         <v-list dense>
-          <v-list-item v-for="item in items" :key="item.title" v-bind:to="item.path">
+          <v-list-item v-for="item in navigation" :key="item.title" v-bind:to="item.path">
             <v-list-item-icon>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-icon>
@@ -34,8 +40,28 @@
             </v-list-item-content>
           </v-list-item>
         </v-list>
+        <!-- end:: Navigation -->
 
+        <!-- start:: Actions -->
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title>actions</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <v-divider></v-divider>
+
+        <v-list dense>
+          <v-list-item v-for="item in actions" :key="item.title" v-bind:to="item.path">
+            <v-list-item-icon>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+        <!-- end:: Actions -->
       </v-navigation-drawer>
       <!-- end:: AsideDrawer -->
     </v-app-bar>
@@ -50,10 +76,14 @@ export default Vue.extend({
 
   data: () => ({
     toggleDrawer: false,
-    items: [
-      { title: "Home", icon: "mdi-home", path: "/home" },
-      { title: "About", icon: "mdi-forum", path: "/about" },
-      { title: "Settings", icon: "mdi-cog", path: "/settings" }
+    navigation: [
+      { title: "home", icon: "mdi-home", path: "/home" },
+      { title: "about", icon: "mdi-forum", path: "/about" },
+      { title: "settings", icon: "mdi-cog", path: "/settings" }
+    ],
+    actions: [
+      { title: "save", icon: "mdi-content-save", path: "/save" },
+      { title: "fetch", icon: "mdi-download", path: "/fetch" }
     ]
   })
 });
