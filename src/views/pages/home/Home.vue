@@ -24,8 +24,6 @@
     </v-container>
     <!-- end:: Add Items to List -->
 
-    <div>{{ list }}</div>
-
     <!-- start:: User's List -->
     <div v-if="list">
       <v-list v-for="(item, index) in list.items" :key="index" outlined>
@@ -58,6 +56,8 @@
 
 <script lang="ts">
 import Vue from "vue";
+// Constants
+import { oneListID } from "../../../.env/api-routes";
 // Models
 import { Item } from "./_models/item.model";
 import { List } from "./_models/list.model";
@@ -91,10 +91,8 @@ export default Vue.extend({
       // Add newItem to local copy of array.
       this.list.items.push(newItem);
 
-      // todo Update User's List on server.
-
-      // Snackbar Messages for success or error.
-      console.warn(`Adding item ${newItem.name}`);
+      // Update List on server.
+      this.updateList(this.list);
 
       this.input = null;
     },
@@ -106,27 +104,23 @@ export default Vue.extend({
       // Remove the Item
       this.list.items.splice(index, 1);
 
-      // todo Update User's List on server.
-
-      // Snackbar Messages for success or error.
-      console.warn(`Removing item ${item.name}`);
+      // Update List on server.
+      this.updateList(this.list);
     },
 
     toggleItem: function(): void {
-      this.updateList();
+      this.updateList(this.list);
     },
 
     getList: function(): void {
       // Resolve the Promise from the HomeService request.
       Promise.resolve(homeService.getOneList()).then(data => {
-        console.log(data);
-        this.list = data[0];
+        this.list = data;
       });
     },
 
-    updateList: function(): void {
-      // todo - Update User List with API call here.
-      console.warn(`Updated list ${this.list.name}:`, this.list.items);
+    updateList: function(body: List): void {
+      Promise.resolve(homeService.updateOneList(body));
     }
   },
 
