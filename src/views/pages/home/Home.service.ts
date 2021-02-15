@@ -7,7 +7,7 @@ const axios = require("axios").default;
 const GET_ONE_LIST = API_ROUTES.ONE_LIST.GET;
 
 export class HomeService {
-  getOneList() {
+  getOneList(): Promise<List> {
     return (
       axios
         .get(GET_ONE_LIST)
