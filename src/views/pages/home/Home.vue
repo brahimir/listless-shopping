@@ -26,12 +26,12 @@
 
     <!-- todo - remove this -->
     <div>
-      {{ info }}
+      {{ list }}
     </div>
 
     <!-- start:: User's List -->
     <div v-if="list">
-      <v-list v-for="(item, index) in list" :key="index" outlined>
+      <v-list v-for="(item, index) in listItems" :key="index" outlined>
         <v-list-item>
           <!-- start:: List Item Checkbox -->
           <v-list-item-action>
@@ -61,18 +61,59 @@
 
 <script lang="ts">
 import Vue from "vue";
+// Constants
+import { API_ROUTES } from "../../../.env/api-routes";
+// Models
 import { Item } from "./_models/item.model";
-
+import { List } from "./_models/list.model";
+// Services
+import { HomeService } from "./Home.service";
+const homeService = new HomeService();
+// Axios
 const axios = require("axios").default;
 
-const list: Item[] = [];
+// GET route for OneList.
+const GET_ONE_LIST = API_ROUTES.ONE_LIST.GET;
+
+// Testing list.
+const oneList: List = {
+  name: "Default",
+  items: [
+    {
+      name: "Bananas",
+      checked: false
+    },
+    {
+      name: "Apples",
+      checked: false
+    },
+    {
+      name: "Potatoes",
+      checked: false
+    },
+    {
+      name: "Milk",
+      checked: false
+    },
+    {
+      name: "Oranges",
+      checked: false
+    },
+    {
+      name: "Bread",
+      checked: false
+    }
+  ]
+};
 
 export default Vue.extend({
   name: "Home",
 
   data: () => ({
     input: null,
-    list: list,
+    list: null,
+    listName: oneList.name,
+    listItems: oneList.items,
     info: ""
   }),
 
@@ -86,7 +127,7 @@ export default Vue.extend({
       };
 
       // Add newItem to local copy of array.
-      this.list.push(newItem);
+      this.listItems.push(newItem);
 
       // todo Update User's List on server.
 
@@ -98,10 +139,10 @@ export default Vue.extend({
 
     removeItem: function(item: Item): void {
       // Get index of Item to remove
-      const index: number = this.list.indexOf(item);
+      const index: number = this.listItems.indexOf(item);
 
       // Remove the Item
-      this.list.splice(index, 1);
+      this.listItems.splice(index, 1);
 
       // todo Update User's List on server.
 
@@ -115,15 +156,16 @@ export default Vue.extend({
 
     updateList: function(): void {
       // todo - Update User List with API call here.
-      console.warn("Updated list:", this.list);
+      console.warn(`Updated list ${this.listName}:`, this.listItems);
     }
   },
 
-  // todo - example
   mounted() {
-    axios
-      .get("https://api.coindesk.com/v1/bpi/currentprice.json")
-      .then((response: any) => (this.info = response));
+    // Resolve the Promise from the HomeService request.
+    Promise.resolve(homeService.getOneList()).then(data => {
+      console.log(data);
+      this.list = data;
+    });
   }
 });
 </script>
