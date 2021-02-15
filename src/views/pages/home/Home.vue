@@ -24,6 +24,8 @@
     </v-container>
     <!-- end:: Add Items to List -->
 
+    <div>{{ list }}</div>
+
     <!-- start:: User's List -->
     <div v-if="list">
       <v-list v-for="(item, index) in list.items" :key="index" outlined>
@@ -63,45 +65,18 @@ import { List } from "./_models/list.model";
 import { HomeService } from "./Home.service";
 const homeService = new HomeService();
 
-// Testing list.
-const oneList: List = {
-  name: "Default",
-  items: [
-    {
-      name: "Bananas",
-      checked: false
-    },
-    {
-      name: "Apples",
-      checked: false
-    },
-    {
-      name: "Potatoes",
-      checked: false
-    },
-    {
-      name: "Milk",
-      checked: false
-    },
-    {
-      name: "Oranges",
-      checked: false
-    },
-    {
-      name: "Bread",
-      checked: false
-    }
-  ]
+// Default empty list if the list on the server is null.
+const emptyList: List = {
+  name: "new list",
+  items: []
 };
-
-let userList: List;
 
 export default Vue.extend({
   name: "Home",
 
   data: () => ({
     input: null,
-    list: oneList
+    list: emptyList
   }),
 
   // todo - these are where the API calls will take place.
@@ -145,7 +120,7 @@ export default Vue.extend({
       // Resolve the Promise from the HomeService request.
       Promise.resolve(homeService.getOneList()).then(data => {
         console.log(data);
-        userList = data;
+        this.list = data[0];
       });
     },
 
