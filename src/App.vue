@@ -24,6 +24,8 @@
 
 <script lang="ts">
 import Vue from "vue";
+// RxJS
+// ? todo
 // Components
 import AppBar from "@/components/layout/AppBar.vue";
 import Footer from "@/components/layout/Footer.vue";
