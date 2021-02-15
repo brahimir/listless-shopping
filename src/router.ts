@@ -6,9 +6,13 @@ Vue.use(Router);
 export default new Router({
   routes: [
     {
+      path: "/",
+      redirect: "/home"
+    },
+    {
       path: "/home",
       name: "Home",
-      component: () => import("./views/pages/Home.vue")
+      component: () => import("./views/pages/home/Home.vue")
     },
     {
       path: "/about",

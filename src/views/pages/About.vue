@@ -1,7 +1,7 @@
 <style lang="scss" scoped>
 #about {
   margin: auto;
-  width: 70%;
+  width: 80%;
 }
 </style>
 

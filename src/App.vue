@@ -30,8 +30,6 @@ import Footer from "@/components/layout/Footer.vue";
 
 export default Vue.extend({
   components: { AppBar, Footer },
-  name: "App",
-
-  data: () => ({})
+  name: "App"
 });
 </script>
