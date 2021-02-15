@@ -23,6 +23,7 @@
 </template>
 
 <script lang="ts">
+// Vue
 import Vue from "vue";
 // RxJS
 // ? todo

@@ -24,6 +24,11 @@
     </v-container>
     <!-- end:: Add Items to List -->
 
+    <!-- todo - remove this -->
+    <div>
+      {{ info }}
+    </div>
+
     <!-- start:: User's List -->
     <div v-if="list">
       <v-list v-for="(item, index) in list" :key="index" outlined>
@@ -36,7 +41,9 @@
 
           <!-- start:: List Item Content -->
           <v-list-item-content>
-            <v-list-item-title :class="{ isChecked: item.checked }">{{ item.name }}</v-list-item-title>
+            <v-list-item-title :class="{ isChecked: item.checked, 'grey--text': item.checked }">
+              {{ item.name }}
+            </v-list-item-title>
           </v-list-item-content>
           <!-- end:: List Item Content -->
 
@@ -56,6 +63,8 @@
 import Vue from "vue";
 import { Item } from "./_models/item.model";
 
+const axios = require("axios").default;
+
 const list: Item[] = [];
 
 export default Vue.extend({
@@ -63,7 +72,8 @@ export default Vue.extend({
 
   data: () => ({
     input: null,
-    list: list
+    list: list,
+    info: ""
   }),
 
   // todo - these are where the API calls will take place.
@@ -78,11 +88,10 @@ export default Vue.extend({
       // Add newItem to local copy of array.
       this.list.push(newItem);
 
-      // Update User's List on server.
-      this.updateList();
+      // todo Update User's List on server.
 
       // Snackbar Messages for success or error.
-      alert(`Adding item ${newItem.name}`);
+      console.warn(`Adding item ${newItem.name}`);
 
       this.input = null;
     },
@@ -94,11 +103,13 @@ export default Vue.extend({
       // Remove the Item
       this.list.splice(index, 1);
 
+      // todo Update User's List on server.
+
       // Snackbar Messages for success or error.
-      alert(`Removing item ${item.name}`);
+      console.warn(`Removing item ${item.name}`);
     },
 
-    toggleItem: function(item: Item): void {
+    toggleItem: function(): void {
       this.updateList();
     },
 
@@ -106,6 +117,13 @@ export default Vue.extend({
       // todo - Update User List with API call here.
       console.warn("Updated list:", this.list);
     }
+  },
+
+  // todo - example
+  mounted() {
+    axios
+      .get("https://api.coindesk.com/v1/bpi/currentprice.json")
+      .then((response: any) => (this.info = response));
   }
 });
 </script>

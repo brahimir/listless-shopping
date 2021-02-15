@@ -1,15 +1,13 @@
 <template>
-  <div id="footer">
-    <v-footer v-bind="{ variant }" :padless="paddless">
-      <v-card flat tile width="100%" class="light lighten-1 text-center">
-        <v-divider></v-divider>
+  <v-footer v-bind="{ variant }" :padless="paddless">
+    <v-card flat tile width="100%" class="light lighten-1 text-center">
+      <v-divider></v-divider>
 
-        <v-card-text class="white--text">
-          {{ new Date().getFullYear() }} — list<strong>less</strong>
-        </v-card-text>
-      </v-card>
-    </v-footer>
-  </div>
+      <v-card-text class="white--text">
+        {{ new Date().getFullYear() }} — list<strong>less</strong>
+      </v-card-text>
+    </v-card>
+  </v-footer>
 </template>
 
 <script lang="ts">
