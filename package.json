@@ -5,13 +5,16 @@
   "scripts": {
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "start": "vue-cli-service serve --port 1901"
+    "start": "vue-cli-service serve --port 1901",
+    "host": "firebase deploy"
   },
   "dependencies": {
     "axios": "^0.21.1",
     "bootstrap-vue": "^2.21.2",
     "core-js": "~3.8.3",
     "eslint-plugin-vue": "^7.5.0",
+    "firebase-admin": "^9.5.0",
+    "firebase-functions": "^3.13.1",
     "rxjs": "^6.6.3",
     "vue": "^2.6.12",
     "vue-axios": "^3.2.4",
