@@ -24,6 +24,10 @@
     </v-container>
     <!-- end:: Add Items to List -->
 
+    <!-- start:: Loading spinner -->
+    <Spinner :size="70" :width="7" :isCentered="true" />
+    <!-- end:: Loading spinner -->
+
     <!-- start:: User's List -->
     <div v-if="list">
       <v-list v-for="(item, index) in list.items" :key="index" outlined>
@@ -63,6 +67,10 @@ import { Item } from "./_models/item.model";
 import { List } from "./_models/list.model";
 // Services
 import { HomeService } from "./Home.service";
+// Components
+import Spinner from "@/components/content/Spinner.vue";
+
+// Instantiate HomeService.
 const homeService = new HomeService();
 
 // Default empty list if the list on the server is null.
@@ -72,11 +80,13 @@ const emptyList: List = {
 };
 
 export default Vue.extend({
+  components: { Spinner },
   name: "Home",
 
   data: () => ({
     input: null,
-    list: emptyList
+    list: emptyList,
+    isLoading: false
   }),
 
   // todo - these are where the API calls will take place.
@@ -113,9 +123,11 @@ export default Vue.extend({
     },
 
     getList: function(): void {
+      this.isLoading = true;
       // Resolve the Promise from the HomeService request.
       Promise.resolve(homeService.getOneList()).then(data => {
         this.list = data;
+        this.isLoading = false;
       });
     },
 

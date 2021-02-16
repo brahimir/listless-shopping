@@ -4,7 +4,7 @@
       <v-divider></v-divider>
 
       <v-card-text class="white--text">
-        {{ new Date().getFullYear() }} — list<strong>less</strong>
+        {{ new Date().getFullYear() }} list-<strong>less</strong>
       </v-card-text>
     </v-card>
   </v-footer>

@@ -4,7 +4,7 @@
       <!-- start:: AppBar Title -->
       <div class="v-toolbar-title headline text-lowercase ml-3">
         <router-link class="text-decoration-none" to="/home">
-          <span class="ll-white font-weight-light">list</span>
+          <span class="ll-white font-weight-light">list-</span>
         </router-link>
         <router-link class="text-decoration-none" to="/home">
           <span class="ll-white">less</span>
