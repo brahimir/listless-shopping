@@ -2,6 +2,16 @@
 .isChecked {
   text-decoration: line-through;
 }
+
+.v-sheet {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.checked {
+  background-color: #161616;
+  border: 1px solid #161616;
+}
 </style>
 
 <template>
@@ -32,7 +42,12 @@
 
       <!-- start:: User's List -->
       <div>
-        <v-list v-for="(item, index) in list.items" :key="index" outlined>
+        <v-list
+          v-for="(item, index) in list.items"
+          :key="index"
+          :class="{ checked: item.checked }"
+          outlined
+        >
           <v-list-item>
             <!-- start:: List Item Checkbox -->
             <v-list-item-action>
@@ -53,7 +68,10 @@
             <!-- end:: List Item Content -->
 
             <!-- start:: Remove Item -->
-            <v-btn icon color="red" @click="removeItem(item)">
+            <v-btn v-if="!item.checked" icon color="red" @click="removeItem(item)">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+            <v-btn v-else icon color="grey" @click="removeItem(item)">
               <v-icon>mdi-delete</v-icon>
             </v-btn>
             <!-- end:: Remove Item -->
