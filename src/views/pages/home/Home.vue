@@ -42,7 +42,7 @@
             <!-- start:: List Item Content -->
             <v-list-item-content>
               <v-list-item-title :class="{ isChecked: item.checked, 'grey--text': item.checked }">
-                {{ item.name }}
+                {{ item.name | lowercase }}
               </v-list-item-title>
             </v-list-item-content>
             <!-- end:: List Item Content -->
@@ -101,7 +101,7 @@ export default Vue.extend({
     addItem: function(item: string): void {
       // Create the new item.
       const newItem: Item = {
-        name: item,
+        name: item.toLowerCase(),
         checked: false
       };
 
