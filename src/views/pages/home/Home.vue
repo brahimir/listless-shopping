@@ -6,16 +6,21 @@
 
 <template>
   <div>
-    <div v-if="list" class="content">
+    <div v-if="!isLoading" class="content">
       <h2 class="text-center mb-10">{{ list.name | lowercase }}</h2>
 
       <!-- start:: Add Items to List -->
       <v-container fluid>
         <v-row>
           <v-col cols="12">
-            <v-input>
+            <v-input @keyup.enter.native="addItem(input)">
               <v-text-field label="type here..." v-model="input">
-                <v-icon slot="append" color="green" @click="addItem(input)" :disabled="!input">
+                <v-icon
+                  slot="append"
+                  color="green"
+                  @click="addItem(input)"
+                  :disabled="!input || isLoading"
+                >
                   mdi-plus
                 </v-icon>
               </v-text-field>
@@ -59,7 +64,7 @@
     </div>
 
     <!-- start:: Loading spinner -->
-    <Spinner class="my-5" :size="70" :width="7" :isCentered="true" />
+    <Spinner v-if="isLoading" class="my-5" :size="70" :width="7" :isCentered="true" />
     <!-- end:: Loading spinner -->
   </div>
 </template>
@@ -125,7 +130,7 @@ export default Vue.extend({
       this.updateList(this.list);
     },
 
-    toggleItem: function(): void {
+    toggleItem: function(item: Item): void {
       this.updateList(this.list);
     },
 
