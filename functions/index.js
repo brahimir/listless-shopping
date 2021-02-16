@@ -8,7 +8,7 @@ const app = express();
 
 // ! Cors - todo
 const corsOptions = {
-  origin: ["http://localhost:1901"]
+  origin: ["http://localhost:1901", "https://list-less-1796b.web.app", "https://list-less.ca"]
 };
 
 // CORs

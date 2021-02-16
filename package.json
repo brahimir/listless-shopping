@@ -6,7 +6,7 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "start": "vue-cli-service serve --port 1901",
-    "host": "firebase deploy"
+    "host": "firebase deploy --only hosting"
   },
   "dependencies": {
     "axios": "^0.21.1",
