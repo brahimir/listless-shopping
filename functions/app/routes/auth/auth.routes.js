@@ -1,4 +1,4 @@
-module.exports = (app) => {
+module.exports = app => {
   const users = require("../../controllers/auth/user.controller.js");
 
   var router = require("express").Router();
@@ -8,16 +8,16 @@ module.exports = (app) => {
   router.post("/register-user", users.register);
 
   // Retrieve all Users
-  router.get("/", users.findAll);
+  router.get("/get/all", users.findAll);
 
   // Retrieve a single User with id
-  router.get("/:id", users.findOne);
+  router.get("/get/:id", users.findOne);
 
   // Update a User with id
-  router.put("/:id", users.update);
+  router.put("/update/:id", users.update);
 
   // Delete a User with id
-  router.delete("/:id", users.delete);
+  router.delete("/delete/:id", users.delete);
 
   // * AUTH
   // Retrieve a single User with email

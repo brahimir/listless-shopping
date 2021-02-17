@@ -1,10 +1,11 @@
-// todo
-module.exports = (mongoose) => {
+module.exports = mongoose => {
   var schema = mongoose.Schema(
     {
       id: String,
-      name: String,
-      lists: Array
+      email: String,
+      password: String,
+      settings: Array,
+      profile: Array
     },
     {
       timestamps: true
