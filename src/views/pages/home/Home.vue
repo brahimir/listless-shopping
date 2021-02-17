@@ -1,3 +1,5 @@
+// todo - Store "checked" items in a separate array, and display them AFTER the "unchecked" items.
+
 <style lang="scss" scoped>
 .isChecked {
   text-decoration: line-through;
@@ -143,7 +145,7 @@ export default Vue.extend({
       this.updateList(this.list);
     },
 
-    toggleItem: function(item: Item): void {
+    toggleItem: function(): void {
       this.updateList(this.list);
     },
 

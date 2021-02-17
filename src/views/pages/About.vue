@@ -6,7 +6,7 @@
 </style>
 
 <template>
-  <div id="about" class="about text-center">
+  <div id="about" class="text-center">
     <h2 class="mb-10">about</h2>
     <p>this simple app lets you create and store shopping lists.</p>
     <p>

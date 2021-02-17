@@ -21,16 +21,16 @@
 
       <!-- start:: AsideDrawer -->
       <v-navigation-drawer v-model="toggleDrawer" app temporary absolute right>
-        <!-- start:: Navigation -->
+        <!-- start:: General -->
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>navigation</v-list-item-title>
+            <v-list-item-title>general</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-divider></v-divider>
 
         <v-list dense>
-          <v-list-item v-for="item in navigation" :key="item.title" v-bind:to="item.path">
+          <v-list-item v-for="item in general" :key="item.title" v-bind:to="item.path">
             <v-list-item-icon>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-icon>
@@ -40,18 +40,18 @@
             </v-list-item-content>
           </v-list-item>
         </v-list>
-        <!-- end:: Navigation -->
+        <!-- end:: General -->
 
-        <!-- start:: Actions -->
+        <!-- start:: User Account -->
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>actions</v-list-item-title>
+            <v-list-item-title>account</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-divider></v-divider>
 
         <v-list dense>
-          <v-list-item v-for="item in actions" :key="item.title" v-bind:to="item.path">
+          <v-list-item v-for="item in userAcccount" :key="item.title" :to="item.path">
             <v-list-item-icon>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-icon>
@@ -61,7 +61,7 @@
             </v-list-item-content>
           </v-list-item>
         </v-list>
-        <!-- end:: Actions -->
+        <!-- end:: User Account -->
       </v-navigation-drawer>
       <!-- end:: AsideDrawer -->
     </v-app-bar>
@@ -76,12 +76,12 @@ export default Vue.extend({
 
   data: () => ({
     toggleDrawer: false,
-    navigation: [
+    general: [
       { title: "home", icon: "mdi-home", path: "/home" },
       { title: "about", icon: "mdi-forum", path: "/about" },
       { title: "settings", icon: "mdi-cog", path: "/settings" }
     ],
-    actions: [
+    userAcccount: [
       { title: "save", icon: "mdi-content-save", path: "/save" },
       { title: "fetch", icon: "mdi-download", path: "/fetch" }
     ]

@@ -13,7 +13,7 @@ db.url = dbConfig.url;
 // * Models
 // Auth
 db.User = require("./auth/user.model")(mongoose);
-// Lists
+// OneList
 db.OneList = require("./one-list/one-list.model")(mongoose);
 
 module.exports = db;

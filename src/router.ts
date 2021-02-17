@@ -24,6 +24,16 @@ export default new Router({
       path: "/settings",
       name: "Settings",
       component: () => import("./views/pages/Settings.vue")
+    },
+    {
+      path: "/login",
+      name: "Login",
+      component: () => import("./views/pages/auth/Login.vue")
+    },
+    {
+      path: "/register",
+      name: "Register",
+      component: () => import("./views/pages/auth/Register.vue")
     }
   ]
 });
