@@ -88,21 +88,16 @@
 </template>
 
 <script lang="ts">
+// Vue
 import Vue from "vue";
-// Constants
-import { oneListID } from "../../../.env/api-routes";
 // Models
 import { Item } from "./_models/item.model";
 import { List } from "./_models/list.model";
 // Services
-import { HomeService } from "./Home.service";
-import { FiltersService } from "../../../core/services/Filters.service";
+import HomeService from "./home.service";
+import FiltersService from "../../../core/services/filters.service";
 // Components
 import Spinner from "@/components/content/Spinner.vue";
-
-// Instantiate HomeService.
-const homeService = new HomeService();
-const filtersService = new FiltersService();
 
 // Default empty list if the list on the server is null.
 const emptyList: List = {
@@ -155,19 +150,19 @@ export default Vue.extend({
     getList: function(): void {
       this.isLoading = true;
       // Resolve the Promise from the HomeService request.
-      Promise.resolve(homeService.getOneList()).then(data => {
+      Promise.resolve(HomeService.getOneList()).then(data => {
         this.list = data;
         this.isLoading = false;
       });
     },
 
     updateList: function(body: List): void {
-      Promise.resolve(homeService.updateOneList(body));
+      Promise.resolve(HomeService.updateOneList(body));
     }
   },
 
   filters: {
-    lowercase: filtersService.lowercase
+    lowercase: FiltersService.lowercase
   },
 
   mounted() {
