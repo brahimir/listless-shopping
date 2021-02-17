@@ -1,11 +1,7 @@
 <style lang="scss" scoped></style>
 
 <template>
-  <form>
-    <h3>Sign Up</h3>
-
-    <div class="form-group"></div>
-  </form>
+  <div></div>
 </template>
 
 <script lang="ts">
