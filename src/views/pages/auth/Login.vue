@@ -7,11 +7,11 @@
     <v-form>
       <v-container>
         <v-row>
-          <v-col cols="12" md="4">
+          <v-col cols="12" xl="4">
             <v-text-field v-model="email" :rules="emailRules" label="e-mail" required></v-text-field>
           </v-col>
 
-          <v-col cols="12" md="4">
+          <v-col cols="12" xl="4">
             <v-text-field
               v-model="password"
               :rules="passwordRules"
@@ -21,12 +21,12 @@
             ></v-text-field>
           </v-col>
 
-          <v-col class="mt-5" cols="12" md="4">
+          <v-col class="mt-5" cols="12" xl="4">
             <v-btn tile block elevation="2" large>login</v-btn>
           </v-col>
 
-          <v-col class="text-center mt-5" cols="12" md="4">
-            <v-label to="/register">don't have an account?</v-label>
+          <v-col class="text-center mt-5" cols="12" xl="4">
+            <v-label><router-link to="/register">don't have an account?</router-link></v-label>
           </v-col>
         </v-row>
       </v-container>

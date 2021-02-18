@@ -42,7 +42,7 @@
       </v-container>
       <!-- end:: Add Items to List -->
 
-      <!-- start:: User's List -->
+      <!-- start:: Items List -->
       <div>
         <v-list
           v-for="(item, index) in list.items"
@@ -56,7 +56,7 @@
               <v-checkbox
                 color="secondary"
                 v-model="item.checked"
-                @click="toggleItem(item)"
+                @click="toggleItem(index, item)"
               ></v-checkbox>
             </v-list-item-action>
             <!-- end:: List Item Checkbox -->
@@ -80,7 +80,7 @@
           </v-list-item>
         </v-list>
       </div>
-      <!-- end:: User's List -->
+      <!-- end:: Items List -->
     </div>
 
     <!-- start:: Loading spinner -->
@@ -145,7 +145,15 @@ export default Vue.extend({
       this.updateList(this.list);
     },
 
-    toggleItem: function(): void {
+    toggleItem: function(index: number, item: Item): void {
+      // if (item.checked) {
+      //   this.list.items.splice(index, 1);
+      //   this.list.items.push(item);
+      // } else {
+      //   this.list.items.splice(index, 1);
+      //   this.list.items.unshift(item);
+      // }
+
       this.updateList(this.list);
     },
 

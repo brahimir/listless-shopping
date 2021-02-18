@@ -21,6 +21,20 @@
 
       <!-- start:: AsideDrawer -->
       <v-navigation-drawer v-model="toggleDrawer" app temporary absolute right>
+        <!-- start:: Display Sign-In if User is not logged in -->
+        <v-list v-if="!user" dense>
+          <v-list-item v-for="item in signIn" :key="item.title" :to="item.path">
+            <v-list-item-icon>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+        <!-- start:: Display Sign-In if User is not logged in -->
+
         <!-- start:: General -->
         <v-list-item>
           <v-list-item-content>
@@ -43,24 +57,26 @@
         <!-- end:: General -->
 
         <!-- start:: User Account -->
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>account</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-divider></v-divider>
-
-        <v-list dense>
-          <v-list-item v-for="item in userAcccount" :key="item.title" :to="item.path">
-            <v-list-item-icon>
-              <v-icon>{{ item.icon }}</v-icon>
-            </v-list-item-icon>
-
+        <div v-if="user">
+          <v-list-item>
             <v-list-item-content>
-              <v-list-item-title>{{ item.title }}</v-list-item-title>
+              <v-list-item-title>account</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-        </v-list>
+          <v-divider></v-divider>
+
+          <v-list dense>
+            <v-list-item v-for="item in userAccount" :key="item.title" :to="item.path">
+              <v-list-item-icon>
+                <v-icon>{{ item.icon }}</v-icon>
+              </v-list-item-icon>
+
+              <v-list-item-content>
+                <v-list-item-title>{{ item.title }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </div>
         <!-- end:: User Account -->
       </v-navigation-drawer>
       <!-- end:: AsideDrawer -->
@@ -71,20 +87,25 @@
 <script lang="ts">
 import Vue from "vue";
 
+const user = {
+  username: "fam",
+  lists: []
+};
+
 export default Vue.extend({
   name: "AppBar",
 
   data: () => ({
+    user: user,
     toggleDrawer: false,
+    asideMenu: [], // todo - have all the below arrays contained in this array, and just render out the menu from there
+    signIn: [{ title: "sign-in", icon: "mdi-login", path: "/login" }],
     general: [
       { title: "home", icon: "mdi-home", path: "/home" },
       { title: "about", icon: "mdi-forum", path: "/about" },
       { title: "settings", icon: "mdi-cog", path: "/settings" }
     ],
-    userAcccount: [
-      { title: "save", icon: "mdi-content-save", path: "/save" },
-      { title: "fetch", icon: "mdi-download", path: "/fetch" }
-    ]
+    userAccount: [{ title: "lists", icon: "mdi-format-list-checks", path: "/lists" }]
   })
 });
 </script>
