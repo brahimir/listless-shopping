@@ -1,58 +1,65 @@
+"use strict";
+
+// ! Firebase functions
 const functions = require("firebase-functions");
 
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
+var express = require("express"),
+  app = express(),
+  port = process.env.PORT || 8082,
+  bodyParser = require("body-parser"),
+  jsonwebtoken = require("jsonwebtoken");
 
-const app = express();
-
-// ! Cors - todo
-const corsOptions = {
-  origin: ["http://localhost:1901", "https://list-less-1796b.web.app", "https://list-less.ca"]
-};
-
-// CORs
-app.use(cors(corsOptions));
-
-// Parse requests of content-type - application/json
+// Parsers
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// Parse requests of content-type - application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }));
+// * Mongoose Models
+require("./app/models/auth/user.model");
 
-// Mongoose
-const db = require("./app/models");
-db.mongoose
-  .connect(db.url, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  })
-  .then(() => {
-    console.log("CONNECTED - listless api");
-  })
-  .catch(err => {
-    console.log("CANNOT CONNECT - listless database api", err);
-    process.exit();
-  });
+const mongoose = require("mongoose");
+const option = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  socketTimeoutMS: 30000,
+  keepAlive: true,
+  reconnectTries: 30000
+};
 
-// ! start:: ROUTES
-// * Landing route
-app.get("/", (req, res) => {
-  res.send("landing - listless server");
+const mongoURI = require("./app/config/db.config.js");
+mongoose.connect(mongoURI.url, option).then(
+  function() {
+    //connected successfully
+    console.log("SUCCESSFULLY CONNECTED TO MONGODB DATABASE.");
+  },
+  function(err) {
+    //err handle
+    console.log(err);
+  }
+);
+
+app.use(function(req, res, next) {
+  // Check for JWT token in header.
+  if (req.headers && req.headers.authorization && req.headers.authorization.split(" ")[0] === "JWT") {
+    jsonwebtoken.verify(req.headers.authorization.split(" ")[1], "list-lessAPI", function(err, decode) {
+      if (err) req.user = undefined;
+      req.user = decode;
+      next();
+    });
+  } else {
+    req.user = undefined;
+    next();
+  }
 });
 
-// todo - OneList
-require("./app/routes/one-list/one-list.routes")(app);
+// * Routes
+var routes = require("./app/routes/auth/auth.routes");
+routes(app);
 
-// todo -  Auth
-// require("./app/routes/auth/auth.routes")(app);
-// ! end:: ROUTES
+app.listen(port);
 
-// Set port, listen for requests
-const PORT = 8082;
+console.log(" list-less API server started on: " + port);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
-});
+module.exports = app;
 
+// ! Firebase exports
 exports.app = functions.https.onRequest(app);

@@ -1,27 +1,13 @@
-module.exports = app => {
-  const users = require("../../controllers/auth/user.controller.js");
+"use strict";
+module.exports = function(app) {
+  var userHandlers = require("../../controllers/auth/user.controller");
 
-  var router = require("express").Router();
+  app.route("/tasks").post(userHandlers.loginRequired, userHandlers.user);
 
-  // * CRUD
-  // Create a new User
-  router.post("/register-user", users.register);
+  // Auth Routes
+  app.route("/auth/register").post(userHandlers.register);
+  app.route("/auth/sign_in").post(userHandlers.sign_in);
 
-  // Retrieve all Users
-  router.get("/get/all", users.findAll);
-
-  // Retrieve a single User with id
-  router.get("/get/:id", users.findOne);
-
-  // Update a User with id
-  router.put("/update/:id", users.update);
-
-  // Delete a User with id
-  router.delete("/delete/:id", users.delete);
-
-  // * AUTH
-  // Retrieve a single User with email
-  router.post("/auth", users.findByEmail);
-
-  app.use("/api/users", router);
+  // Get User from JWT token
+  app.route("/auth/user").post(userHandlers.user);
 };
