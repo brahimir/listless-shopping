@@ -4,10 +4,25 @@
 const functions = require("firebase-functions");
 
 var express = require("express"),
-  app = express(),
-  port = process.env.PORT || 8082,
+  cors = require("cors"),
   bodyParser = require("body-parser"),
+  port = process.env.PORT || 8082,
   jsonwebtoken = require("jsonwebtoken");
+
+// ! Cors
+var corsOptions = {
+  origin: [
+    "https://the-compendium.web.app",
+    "https://www.the-compendium.ca",
+    "https://the-compendium.ca",
+    "http://localhost:1900"
+  ]
+};
+
+const app = express();
+
+// CORs
+app.use(cors(corsOptions));
 
 // Parsers
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -57,9 +72,9 @@ routes(app);
 
 app.listen(port);
 
-console.log(" list-less API server started on: " + port);
+console.log(" list-less API server listening on port: " + port);
 
-module.exports = app;
+// module.exports = app;
 
 // ! Firebase exports
 exports.app = functions.https.onRequest(app);

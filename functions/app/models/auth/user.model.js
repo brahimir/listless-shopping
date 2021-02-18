@@ -19,11 +19,11 @@ var UserSchema = new Schema({
     type: String
   },
   settings: {
-    type: Array,
+    type: Object,
     required: true
   },
   profile: {
-    type: Array,
+    type: Object,
     required: true
   },
   created: {
