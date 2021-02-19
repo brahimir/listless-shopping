@@ -1,16 +1,27 @@
-module.exports = (mongoose) => {
-  var schema = mongoose.Schema(
-    {
-      id: String,
-      name: String,
-      items: Array
-    },
-    {
-      timestamps: true
-    }
-  );
+"use strict";
 
-  // ! This mongoose model names the collection in the database upon creation.
-  const List = mongoose.model("one_list", schema);
-  return List;
-};
+var mongoose = require("mongoose"),
+  Schema = mongoose.Schema;
+
+/**
+ * OneList Schema
+ */
+var OneListSchema = new Schema({
+  name: {
+    type: String,
+    unique: true,
+    lowercase: true,
+    trim: true,
+    required: true
+  },
+  items: {
+    type: Array,
+    required: true
+  },
+  created: {
+    type: Date,
+    default: Date.now
+  }
+});
+
+mongoose.model("OneList", OneListSchema);

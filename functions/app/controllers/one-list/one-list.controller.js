@@ -1,5 +1,7 @@
-const db = require("../../models");
-const OneList = db.OneList;
+"use strict";
+
+var mongoose = require("mongoose"),
+  OneList = mongoose.model("OneList");
 
 exports.create = (req, res) => {
   // ! start:: Validate request
@@ -29,10 +31,10 @@ exports.create = (req, res) => {
   // Save OneList in the database
   newOneList
     .save(newOneList)
-    .then((data) => {
+    .then(data => {
       res.send(data);
     })
-    .catch((err) => {
+    .catch(err => {
       res.status(500).send({
         message: err.message || "Some error occurred while creating the newOneList."
       });
@@ -52,10 +54,10 @@ exports.findAll = (req, res) => {
     : {};
 
   OneList.find(condition)
-    .then((data) => {
+    .then(data => {
       res.send(data);
     })
-    .catch((err) => {
+    .catch(err => {
       res.status(500).send({
         message: err.message || "Some error occurred while retrieving OneLists."
       });
@@ -67,14 +69,14 @@ exports.findOne = (req, res) => {
   const id = req.params.id;
 
   OneList.findById(id)
-    .then((data) => {
+    .then(data => {
       if (!data)
         res.status(404).send({
           message: "Not found OneList with id " + id
         });
       else res.send(data);
     })
-    .catch((err) => {
+    .catch(err => {
       res.status(500).send({
         message: "Error retrieving OneList with id=" + id
       });
@@ -94,7 +96,7 @@ exports.update = (req, res) => {
   OneList.findByIdAndUpdate(id, req.body, {
     useFindAndModify: false
   })
-    .then((data) => {
+    .then(data => {
       if (!data) {
         res.status(404).send({
           message: `Cannot update OneList with id=${id}. Maybe OneList was not found!`
@@ -104,7 +106,7 @@ exports.update = (req, res) => {
           message: "OneList was updated successfully."
         });
     })
-    .catch((err) => {
+    .catch(err => {
       res.status(500).send({
         message: "Error updating OneList with id=" + id
       });
@@ -116,7 +118,7 @@ exports.delete = (req, res) => {
   const id = req.params.id;
 
   OneList.findByIdAndRemove(id)
-    .then((data) => {
+    .then(data => {
       if (!data) {
         res.status(404).send({
           message: `Cannot delete OneList with id=${id}. Maybe OneList was not found!`
@@ -127,7 +129,7 @@ exports.delete = (req, res) => {
         });
       }
     })
-    .catch((err) => {
+    .catch(err => {
       res.status(500).send({
         message: "Could not delete OneList with id=" + id
       });
@@ -137,12 +139,12 @@ exports.delete = (req, res) => {
 // Delete all OneLists from the database.
 exports.deleteAll = (req, res) => {
   OneList.deleteMany({})
-    .then((data) => {
+    .then(data => {
       res.send({
         message: `${data.deletedCount} OneLists were deleted successfully!`
       });
     })
-    .catch((err) => {
+    .catch(err => {
       res.status(500).send({
         message: err.message || "Some error occurred while removing all OneLists."
       });
