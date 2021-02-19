@@ -11,7 +11,7 @@ var express = require("express"),
 
 // ! Cors
 var corsOptions = {
-  origin: ["https://list-less.ca/", "https://www.list-less.ca/", "http://localhost:1901"]
+  origin: ["https://list-less.ca", "https://www.list-less.ca", "http://localhost:1901"]
 };
 
 const app = express();
