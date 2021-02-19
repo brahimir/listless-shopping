@@ -9,6 +9,7 @@
     "host": "firebase deploy --only hosting"
   },
   "dependencies": {
+    "@types/vuelidate": "^0.7.13",
     "axios": "^0.21.1",
     "bootstrap-vue": "^2.21.2",
     "core-js": "~3.8.3",
