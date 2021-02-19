@@ -87,10 +87,12 @@
 <script lang="ts">
 import Vue from "vue";
 
-const user = {
-  username: "fam",
-  lists: []
-};
+// todo - get the user from AppState store.
+// const user = {
+//   username: "fam",
+//   lists: []
+// };
+const user = null;
 
 export default Vue.extend({
   name: "AppBar",
