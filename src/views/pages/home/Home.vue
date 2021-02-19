@@ -27,12 +27,7 @@
           <v-col cols="12">
             <v-input @keyup.enter.native="addItem(input)">
               <v-text-field label="type here..." v-model="input">
-                <v-icon
-                  slot="append"
-                  color="green"
-                  @click="addItem(input)"
-                  :disabled="!input || isLoading"
-                >
+                <v-icon slot="append" @click="addItem(input)" :disabled="!input || isLoading">
                   mdi-plus
                 </v-icon>
               </v-text-field>
@@ -96,7 +91,7 @@ import Vue from "vue";
 import { Item } from "./_models/item.model";
 import { List } from "./_models/list.model";
 // Services
-import HomeService from "./home.service";
+import HomeService from "./Home.service";
 import FiltersService from "../../../core/services/filters.service";
 // Components
 import Spinner from "@/components/content/Spinner.vue";

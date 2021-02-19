@@ -23,7 +23,7 @@
       <v-navigation-drawer v-model="toggleDrawer" app temporary absolute right>
         <!-- start:: Display Sign-In if User is not logged in -->
         <v-list v-if="!user" dense>
-          <v-list-item v-for="item in signIn" :key="item.title" :to="item.path">
+          <v-list-item v-for="item in signInRegister" :key="item.title" :to="item.path">
             <v-list-item-icon>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-icon>
@@ -87,10 +87,12 @@
 <script lang="ts">
 import Vue from "vue";
 
-const user = {
-  username: "fam",
-  lists: []
-};
+// todo - get the user from AppState store.
+// const user = {
+//   username: "fam",
+//   lists: []
+// };
+const user = null;
 
 export default Vue.extend({
   name: "AppBar",
@@ -99,7 +101,10 @@ export default Vue.extend({
     user: user,
     toggleDrawer: false,
     asideMenu: [], // todo - have all the below arrays contained in this array, and just render out the menu from there
-    signIn: [{ title: "sign-in", icon: "mdi-login", path: "/login" }],
+    signInRegister: [
+      { title: "sign in", icon: "mdi-login", path: "/login" },
+      { title: "register", icon: "mdi-account-plus", path: "/register" }
+    ],
     general: [
       { title: "home", icon: "mdi-home", path: "/home" },
       { title: "about", icon: "mdi-forum", path: "/about" },
