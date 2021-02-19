@@ -8,18 +8,36 @@ import { User } from "../_models/user.model";
 // Axios
 import axios from "axios";
 
-// API Routes
-const GET_ONE_LIST = API_ROUTES.ONE_LIST.GET;
-const UPDATE_ONE_LIST = API_ROUTES.ONE_LIST.UPDATE;
+// todo API Routes
+const REGISTER_USER = API_ROUTES.AUTH.USERS.REGISTER;
+const LOGIN_USER = API_ROUTES.AUTH.USERS.LOGIN;
 
 const AuthService = {
   init() {
     Vue.use(VueAxios, axios);
+  },
+
+  login(credentials: any): Promise<any> {
+    return axios
+      .post(LOGIN_USER, credentials)
+      .then(function(res: any) {
+        return res.data;
+      })
+      .catch(function(err: any) {
+        console.log(err);
+      });
+  },
+
+  register(user: User): Promise<any> {
+    return axios
+      .post(REGISTER_USER, user)
+      .then(function(res: any) {
+        return res.data;
+      })
+      .catch(function(err: any) {
+        console.log(err);
+      });
   }
-
-  // login(): Promise<any> {},
-
-  // register(body: List): Promise<any> {}
 
   //   todo
   //   getUserLists(userID: string) {}
