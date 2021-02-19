@@ -1,3 +1,5 @@
+// todo - create a v-alert for accounts that already exist in the database instead of a gerneal error.
+
 <style lang="scss" scoped>
 #register {
   margin: auto;
@@ -54,40 +56,40 @@
         <v-row class="mt-10">
           <v-col cols="12" xl="4">
             <!-- start:: Register Success Message  -->
-            <v-card v-if="successRegister" elevation="17" tile color="success">
-              <v-card-title class="justify-center">successfully registered!</v-card-title>
-              <v-card-text class="text-center">
-                <router-link to="/login">click here to log in.</router-link>
-              </v-card-text>
-            </v-card>
+            <v-alert v-if="successRegister" type="success" dense text dismissible>
+              <div class="text-center">
+                successfully registered!
+              </div>
+            </v-alert>
             <!-- end:: Register Success Message -->
 
             <!-- start:: Register Failure Message -->
-            <v-card v-if="errorRegister" elevation="17" tile color="danger">
-              <v-card-title class="justify-center">uh oh!</v-card-title>
-              <v-card-text class="text-center">
-                there was a problem registering your account. please try again.
-              </v-card-text>
-            </v-card>
+            <v-alert v-if="errorRegister" type="error" dense text dismissible>
+              <div class="text-center">
+                there was a problem registering your account, please try again!
+              </div>
+            </v-alert>
             <!-- start:: Register Failure Message -->
           </v-col>
         </v-row>
 
         <v-row class="mt-10">
           <v-col cols="12" xl="4">
-            <v-card elevation="17" tile color="orange darken-4">
-              <v-card-title class="justify-center">PLEASE READ</v-card-title>
-              <v-card-text class="text-center">
-                <p>
-                  this web application is currently
-                  <span class="font-weight-bold">in development.</span> when registering,
-                  <span class="font-weight-bold">do not</span> use personal data or credentials.
-                </p>
-                <p>
-                  thank you!
-                </p>
-              </v-card-text>
-            </v-card>
+            <v-alert type="warning" dense text>
+              <h4 class="text-center">ATTENTION</h4>
+              <div class="text-center">
+                <div>
+                  This application is currently <span class="font-weight-bold">in development.</span>
+                </div>
+                <div>
+                  When registering, please <span class="font-weight-bold">do not</span> use personal data
+                  or log in credentials.
+                </div>
+                <div>
+                  Thank you!
+                </div>
+              </div>
+            </v-alert>
           </v-col>
         </v-row>
       </v-container>
@@ -130,6 +132,9 @@ export default Vue.extend({
       // Check form for errors.
       this.$v.$touch();
       if (this.$v.$anyError) return;
+
+      this.successRegister = false;
+      this.errorRegister = false;
 
       const user: User = {
         email: this.email,

@@ -49,17 +49,16 @@
         <v-row class="mt-10">
           <v-col cols="12" xl="4">
             <!-- start:: Login Failure Message -->
-            <v-card v-if="errorLogin" elevation="17" tile color="danger">
-              <v-card-title class="justify-center">uh oh!</v-card-title>
-              <v-card-text class="text-center">
+            <v-alert v-if="errorLogin" type="error" dense text dismissible>
+              <div class="text-center">
                 invalid username or password. please try again.
-              </v-card-text>
-            </v-card>
+              </div>
+            </v-alert>
             <!-- start:: Login Failure Message -->
           </v-col>
         </v-row>
 
-        <v-row class="text-center">
+        <v-row class="text-center mt-5">
           <v-col cols="12" xl="4">
             <p>
               don't have an account?
@@ -105,6 +104,8 @@ export default Vue.extend({
       // Check form for errors.
       this.$v.$touch();
       if (this.$v.$anyError) return;
+
+      this.errorLogin = false;
 
       const credentials: any = {
         email: this.email,
