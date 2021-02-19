@@ -12,7 +12,7 @@
     <v-form @submit.stop.prevent="register" v-model="valid">
       <v-container>
         <v-row>
-          <v-col cols="12" md="4">
+          <v-col cols="12" xl="4">
             <v-text-field
               v-model="email"
               :error-messages="emailErrors"
@@ -23,7 +23,7 @@
             ></v-text-field>
           </v-col>
 
-          <v-col cols="12" md="4">
+          <v-col cols="12" xl="4">
             <v-text-field
               type="password"
               v-model="password"
@@ -35,7 +35,7 @@
             ></v-text-field>
           </v-col>
 
-          <v-col class="mt-5" cols="12" md="4">
+          <v-col class="mt-5" cols="12" xl="4">
             <v-btn
               tile
               block
@@ -52,7 +52,7 @@
         </v-row>
 
         <v-row class="mt-10">
-          <v-col cols="12" md="4">
+          <v-col cols="12" xl="4">
             <!-- start:: Register Success Message  -->
             <v-card v-if="successRegister" elevation="17" tile color="success">
               <v-card-title class="justify-center">successfully registered!</v-card-title>
@@ -74,12 +74,18 @@
         </v-row>
 
         <v-row class="mt-10">
-          <v-col cols="12" md="4">
-            <v-card elevation="17" tile color="orange darken-3">
+          <v-col cols="12" xl="4">
+            <v-card elevation="17" tile color="orange darken-4">
               <v-card-title class="justify-center">PLEASE READ</v-card-title>
               <v-card-text class="text-center">
-                this web application is currently IN DEVELOPMENT. when registering, DO NOT use personal
-                data or credentials. thank you.
+                <p>
+                  this web application is currently
+                  <span class="font-weight-bold">in development.</span> when registering,
+                  <span class="font-weight-bold">do not</span> use personal data or credentials.
+                </p>
+                <p>
+                  thank you!
+                </p>
               </v-card-text>
             </v-card>
           </v-col>
