@@ -115,19 +115,16 @@ export default Vue.extend({
 
       this.isLoading = true;
       // todo - refactor: move these nested Promises to the auth service.
-      Promise.resolve(AuthService.getLoginToken(credentials)).then((token: string) => {
-        Promise.resolve(
-          AuthService.getUser(token).then((user: User) => {
-            if (!user) {
-              this.errorLogin = true;
-              this.isLoading = false;
-              return;
-            }
-            // todo - save the User in the AppState.
-            console.log(user);
-            this.isLoading = false;
-          })
-        );
+      Promise.resolve(AuthService.login(credentials)).then((user: User) => {
+        if (!user) {
+          this.errorLogin = true;
+          this.isLoading = false;
+          return;
+        }
+        // Store the current User in AppState.
+        this.$store.dispatch("user", user);
+
+        this.isLoading = false;
       });
     },
 

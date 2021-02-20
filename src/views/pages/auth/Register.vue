@@ -34,6 +34,7 @@
 
           <v-col class="mt-5" cols="12" xl="4">
             <v-btn
+              type="submit"
               tile
               block
               elevation="2"
@@ -134,8 +135,12 @@ export default Vue.extend({
       const user: User = {
         email: this.email,
         password: this.password,
-        settings: [],
-        profile: []
+        settings: {
+          darkMode: true
+        },
+        profile: {
+          lists: []
+        }
       };
 
       this.isLoading = true;

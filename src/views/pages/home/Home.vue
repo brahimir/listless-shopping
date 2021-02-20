@@ -101,9 +101,11 @@ import FiltersService from "../../../core/services/filters.service";
 import Spinner from "@/components/content/Spinner.vue";
 
 // Default empty list if the list on the server is null.
-const emptyList: List = {
+const defaultList: List = {
+  category: "example",
   name: "your list",
-  items: []
+  items: [],
+  isActive: true
 };
 
 export default Vue.extend({
@@ -112,7 +114,8 @@ export default Vue.extend({
 
   data: () => ({
     input: null,
-    list: emptyList,
+    user: null,
+    list: defaultList,
     isLoading: false
   }),
 

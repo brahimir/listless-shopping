@@ -3,6 +3,7 @@ import Vue from "vue";
 import VueAxios from "vue-axios";
 // Constants
 import { API_ROUTES } from "../../.env/api-routes";
+import { AUTH_TOKEN } from "../../.env/api-routes";
 // Models
 import { User } from "../_models/user.model";
 // Axios
@@ -19,11 +20,16 @@ const AuthService = {
     Vue.use(VueAxios, axios);
   },
 
-  getLoginToken(credentials: any): Promise<any> {
+  // todo - store the User object in AppState here.
+  login(credentials: any): Promise<any> {
     return axios
       .post(LOGIN_USER, credentials)
       .then((res: any) => {
-        return res.data.token;
+        // Store the token in local storage.
+        localStorage.setItem("token", res.data.token);
+        return this.getUserFromToken(res.data.token).then((user: User) => {
+          return user;
+        });
       })
       .catch((err: any) => {
         console.log(err);
@@ -31,6 +37,12 @@ const AuthService = {
       });
   },
 
+  /**
+   * Registers a new User.
+   *
+   * @param {User} user The User object.
+   * @returns {Promise<any>} Resulting User added in a Promise.
+   */
   register(user: User): Promise<any> {
     return axios
       .post(REGISTER_USER, user)
@@ -43,11 +55,17 @@ const AuthService = {
       });
   },
 
-  getUser(token: string): Promise<User> {
+  /**
+   * Gets a User object from an access token.
+   *
+   * @param {string} token The access token.
+   * @returns {Promise<User>} The resulting User object as a Promise.
+   */
+  getUserFromToken(token: string): Promise<User> {
     // Set headers.
     const config: any = {
       headers: {
-        Authorization: "JWT " + token
+        Authorization: AUTH_TOKEN + token
       }
     };
 
@@ -60,14 +78,12 @@ const AuthService = {
         console.log(err);
         return err;
       });
+  },
+
+  // todo
+  logout(): void {
+    // todo Remove the token from local storage.
   }
-
-  //   todo
-  //   getUserLists(userID: string) {}
-
-  //   updateUserLists(userID: string, body: List) {}
-
-  //   getUserActiveList() {}
 };
 
 export default AuthService;
