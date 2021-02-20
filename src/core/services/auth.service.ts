@@ -7,35 +7,58 @@ import { API_ROUTES } from "../../.env/api-routes";
 import { User } from "../_models/user.model";
 // Axios
 import axios from "axios";
+import { ResultStorage } from "firebase-functions/lib/providers/testLab";
 
 // todo API Routes
 const REGISTER_USER = API_ROUTES.AUTH.USERS.REGISTER;
 const LOGIN_USER = API_ROUTES.AUTH.USERS.LOGIN;
+const GET_USER = API_ROUTES.AUTH.USERS.GET_USER;
 
 const AuthService = {
   init() {
     Vue.use(VueAxios, axios);
   },
 
-  login(credentials: any): Promise<any> {
+  getLoginToken(credentials: any): Promise<any> {
     return axios
       .post(LOGIN_USER, credentials)
-      .then(function(res: any) {
-        return res.data;
+      .then((res: any) => {
+        return res.data.token;
       })
-      .catch(function(err: any) {
+      .catch((err: any) => {
         console.log(err);
+        return err;
       });
   },
 
   register(user: User): Promise<any> {
     return axios
       .post(REGISTER_USER, user)
-      .then(function(res: any) {
+      .then((res: any) => {
         return res.data;
       })
-      .catch(function(err: any) {
+      .catch((err: any) => {
         console.log(err);
+        return err;
+      });
+  },
+
+  getUser(token: string): Promise<User> {
+    // Set headers.
+    const config: any = {
+      headers: {
+        Authorization: "JWT " + token
+      }
+    };
+
+    return axios
+      .post(GET_USER, null, config)
+      .then((res: any) => {
+        return res.data;
+      })
+      .catch((err: any) => {
+        console.log(err);
+        return err;
       });
   }
 

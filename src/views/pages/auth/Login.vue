@@ -108,21 +108,26 @@ export default Vue.extend({
 
       this.errorLogin = false;
 
-      const credentials: any = {
+      const credentials = {
         email: this.email,
         password: this.password
       };
 
       this.isLoading = true;
-      Promise.resolve(AuthService.login(credentials)).then((user: User) => {
-        if (!user) {
-          this.errorLogin = true;
-          this.isLoading = false;
-          return;
-        }
-        // todo - save the User in the AppState.
-        console.log(user);
-        this.isLoading = false;
+      // todo - refactor: move these nested Promises to the auth service.
+      Promise.resolve(AuthService.getLoginToken(credentials)).then((token: string) => {
+        Promise.resolve(
+          AuthService.getUser(token).then((user: User) => {
+            if (!user) {
+              this.errorLogin = true;
+              this.isLoading = false;
+              return;
+            }
+            // todo - save the User in the AppState.
+            console.log(user);
+            this.isLoading = false;
+          })
+        );
       });
     },
 
@@ -135,13 +140,13 @@ export default Vue.extend({
 
   computed: {
     passwordErrors() {
-      const errors: any[] = [];
+      const errors: string[] = [];
       if (!this.$v.$dirty) return errors;
       !this.$v.password.required && errors.push("enter your password");
       return errors;
     },
     emailErrors() {
-      const errors: any[] = [];
+      const errors: string[] = [];
       if (!this.$v.email.$dirty) return errors;
       !this.$v.email.email && errors.push("enter a valid email");
       !this.$v.email.required && errors.push("enter your email");
