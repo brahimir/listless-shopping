@@ -32,6 +32,7 @@
 
           <v-col class="mt-5" cols="12" xl="4">
             <v-btn
+              type="submit"
               tile
               block
               elevation="2"
@@ -113,15 +114,15 @@ export default Vue.extend({
       };
 
       this.isLoading = true;
-      Promise.resolve(AuthService.login(credentials)).then(data => {
-        if (data) {
-          const user: User = data;
-          console.log(user);
-          this.isLoading = false;
-        } else {
+      Promise.resolve(AuthService.login(credentials)).then((user: User) => {
+        if (!user) {
           this.errorLogin = true;
           this.isLoading = false;
+          return;
         }
+        // todo - save the User in the AppState.
+        console.log(user);
+        this.isLoading = false;
       });
     },
 
