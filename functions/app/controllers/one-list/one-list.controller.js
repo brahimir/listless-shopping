@@ -22,7 +22,7 @@ exports.create = (req, res) => {
   }
   // ! end:: Validate request
 
-  // Create a OneList
+  // Create a new OneList
   const newOneList = new OneList({
     name: req.body.name,
     items: req.body.items
@@ -78,6 +78,7 @@ exports.findOne = (req, res) => {
     })
     .catch(err => {
       res.status(500).send({
+        error: err,
         message: "Error retrieving OneList with id=" + id
       });
     });
@@ -108,6 +109,7 @@ exports.update = (req, res) => {
     })
     .catch(err => {
       res.status(500).send({
+        error: err,
         message: "Error updating OneList with id=" + id
       });
     });
@@ -131,22 +133,8 @@ exports.delete = (req, res) => {
     })
     .catch(err => {
       res.status(500).send({
+        error: err,
         message: "Could not delete OneList with id=" + id
-      });
-    });
-};
-
-// Delete all OneLists from the database.
-exports.deleteAll = (req, res) => {
-  OneList.deleteMany({})
-    .then(data => {
-      res.send({
-        message: `${data.deletedCount} OneLists were deleted successfully!`
-      });
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while removing all OneLists."
       });
     });
 };

@@ -1,11 +1,6 @@
 // todo - create a v-alert for accounts that already exist in the database instead of a gerneal error.
 
-<style lang="scss" scoped>
-#register {
-  margin: auto;
-  width: 80%;
-}
-</style>
+<style lang="scss" scoped></style>
 
 <template>
   <div id="register">
