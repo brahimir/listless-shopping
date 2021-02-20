@@ -24,7 +24,7 @@
       <!-- start:: Add Items to List -->
       <v-container fluid>
         <v-row>
-          <v-col cols="12">
+          <v-col cols="12" xl="1">
             <v-input @keyup.enter.native="addItem(input)">
               <v-text-field label="type here..." v-model="input">
                 <v-icon slot="append" @click="addItem(input)" :disabled="!input || isLoading">
@@ -76,6 +76,10 @@
         </v-list>
       </div>
       <!-- end:: Items List -->
+
+      <div class="mt-10">
+        <v-btn color="warning" block tile outlined>archive list</v-btn>
+      </div>
     </div>
 
     <!-- start:: Loading spinner -->
@@ -121,7 +125,7 @@ export default Vue.extend({
       };
 
       // Add newItem to local copy of array.
-      this.list.items.push(newItem);
+      this.list.items.unshift(newItem);
 
       // Update List on server.
       this.updateList(this.list);
@@ -141,6 +145,7 @@ export default Vue.extend({
     },
 
     toggleItem: function(index: number, item: Item): void {
+      // todo - shifts item successfully, but "checks" the next item in the list.
       // if (item.checked) {
       //   this.list.items.splice(index, 1);
       //   this.list.items.push(item);
