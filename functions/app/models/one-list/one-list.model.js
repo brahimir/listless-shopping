@@ -6,22 +6,20 @@ var mongoose = require("mongoose"),
 /**
  * OneList Schema
  */
-var OneListSchema = new Schema({
-  name: {
-    type: String,
-    unique: true,
-    lowercase: true,
-    trim: true,
-    required: true
+var OneListSchema = new Schema(
+  {
+    name: {
+      type: String,
+      lowercase: true,
+      trim: true,
+      required: true
+    },
+    items: {
+      type: Array,
+      required: true
+    }
   },
-  items: {
-    type: Array,
-    required: true
-  },
-  created: {
-    type: Date,
-    default: Date.now
-  }
-});
+  { timestamps: true }
+);
 
 mongoose.model("OneList", OneListSchema);

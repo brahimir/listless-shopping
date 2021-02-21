@@ -26,6 +26,9 @@ var UserSchema = new Schema(
     profile: {
       type: Object,
       required: true
+    },
+    authToken: {
+      type: String
     }
   },
   { timestamps: true }

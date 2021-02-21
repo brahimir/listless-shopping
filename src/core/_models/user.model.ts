@@ -7,4 +7,5 @@ export interface User {
   profile: {
     lists: Object[];
   };
+  authToken?: string;
 }

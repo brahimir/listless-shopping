@@ -19,12 +19,14 @@
 <template>
   <div>
     <div v-if="!isLoading" class="content">
+      <div v-if="currentUser">Hello {{ currentUser }}</div>
+
       <h2 class="text-center mb-10">{{ list.name | lowercase }}</h2>
 
       <!-- start:: Add Items to List -->
       <v-container fluid>
         <v-row>
-          <v-col cols="12" xl="1">
+          <v-col cols="12">
             <v-input @keyup.enter.native="addItem(input)">
               <v-text-field label="type here..." v-model="input">
                 <v-icon slot="append" @click="addItem(input)" :disabled="!input || isLoading">
@@ -91,6 +93,8 @@
 <script lang="ts">
 // Vue
 import Vue from "vue";
+// Vuex
+import { mapGetters } from "vuex";
 // Models
 import { Item } from "./_models/item.model";
 import { List } from "./_models/list.model";
@@ -114,7 +118,6 @@ export default Vue.extend({
 
   data: () => ({
     input: null,
-    user: null,
     list: defaultList,
     isLoading: false
   }),
@@ -171,6 +174,10 @@ export default Vue.extend({
 
     updateList: function(body: List): void {
       Promise.resolve(HomeService.updateOneList(body));
+    },
+
+    getLocalToken: function(): void {
+      console.log(window.localStorage.getItem("token"));
     }
   },
 
@@ -179,7 +186,11 @@ export default Vue.extend({
   },
 
   mounted() {
+    this.getLocalToken();
     this.getList();
+  },
+  computed: {
+    ...mapGetters(["currentUser"])
   }
 });
 </script>

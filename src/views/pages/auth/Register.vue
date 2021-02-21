@@ -9,7 +9,7 @@
     <v-form @submit.stop.prevent="register" v-model="valid">
       <v-container>
         <v-row>
-          <v-col cols="12" xl="4">
+          <v-col cols="12">
             <v-text-field
               v-model="email"
               :error-messages="emailErrors"
@@ -20,7 +20,7 @@
             ></v-text-field>
           </v-col>
 
-          <v-col cols="12" xl="4">
+          <v-col cols="12">
             <v-text-field
               type="password"
               v-model="password"
@@ -32,7 +32,7 @@
             ></v-text-field>
           </v-col>
 
-          <v-col class="mt-5" cols="12" xl="4">
+          <v-col class="mt-5" cols="12">
             <v-btn
               type="submit"
               tile
@@ -50,7 +50,7 @@
         </v-row>
 
         <v-row class="mt-10">
-          <v-col cols="12" xl="4">
+          <v-col cols="12">
             <!-- start:: Register Success Message  -->
             <v-alert v-if="successRegister" type="success" dense text dismissible>
               <div class="text-center">
@@ -70,7 +70,7 @@
         </v-row>
 
         <v-row class="mt-10">
-          <v-col cols="12" xl="4">
+          <v-col cols="12">
             <v-alert type="warning" dense text>
               <h4 class="text-center">ATTENTION</h4>
               <div class="text-center">

@@ -7,7 +7,7 @@
     <v-form @submit.stop.prevent="login" v-model="valid">
       <v-container>
         <v-row>
-          <v-col cols="12" xl="4">
+          <v-col cols="12">
             <v-text-field
               v-model="email"
               :error-messages="emailErrors"
@@ -18,7 +18,7 @@
             ></v-text-field>
           </v-col>
 
-          <v-col cols="12" xl="4">
+          <v-col cols="12">
             <v-text-field
               type="password"
               v-model="password"
@@ -30,7 +30,7 @@
             ></v-text-field>
           </v-col>
 
-          <v-col class="mt-5" cols="12" xl="4">
+          <v-col class="mt-5" cols="12">
             <v-btn
               type="submit"
               tile
@@ -48,7 +48,7 @@
         </v-row>
 
         <v-row class="mt-10">
-          <v-col cols="12" xl="4">
+          <v-col cols="12">
             <!-- start:: Login Failure Message -->
             <v-alert v-if="errorLogin" type="error" dense text dismissible>
               <div class="text-center">
@@ -56,11 +56,19 @@
               </div>
             </v-alert>
             <!-- start:: Login Failure Message -->
+
+            <!-- start:: Login Success Message -->
+            <v-alert v-if="successLogin" type="error" dense text>
+              <div class="text-center">
+                successfully logged in!
+              </div>
+            </v-alert>
+            <!-- start:: Login Success Message -->
           </v-col>
         </v-row>
 
         <v-row class="text-center mt-5">
-          <v-col cols="12" xl="4">
+          <v-col cols="12">
             <p>
               don't have an account?
             </p>
@@ -81,6 +89,7 @@ import AuthService from "../../../core/services/auth.service";
 // Vuelidate
 import { validationMixin } from "vuelidate";
 import { email, required } from "vuelidate/lib/validators";
+import { LOGIN } from "@/core/services/store/auth.module";
 
 export default Vue.extend({
   mixins: [validationMixin],
@@ -89,6 +98,7 @@ export default Vue.extend({
   data: () => ({
     isLoading: false,
     errorLogin: false,
+    successLogin: false,
     message: "",
     valid: false,
     password: "",
@@ -115,17 +125,11 @@ export default Vue.extend({
 
       this.isLoading = true;
       // todo - refactor: move these nested Promises to the auth service.
-      Promise.resolve(AuthService.login(credentials)).then((user: User) => {
-        if (!user) {
-          this.errorLogin = true;
-          this.isLoading = false;
-          return;
-        }
-        // Store the current User in AppState.
-        this.$store.dispatch("user", user);
-
-        this.isLoading = false;
-      });
+      // send login request
+      this.$store
+        .dispatch(LOGIN, credentials)
+        // go to which page after successfully login
+        .then(() => this.$router.push("/home"));
     },
 
     clearForm: function(): void {
