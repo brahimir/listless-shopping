@@ -30,8 +30,29 @@ exports.signIn = function(req, res) {
       return res.status(401).json({ message: "Authentication failed. Invalid user or password." });
     }
 
+    // Generate and set User's auth token.
+    const userToken = jwt.sign(
+      { _id: user._id, email: user.email, settings: user.settings },
+      "list-lessAPI"
+    );
+
+    user.token = userToken;
+
+    // Save User's auth token to server.
+    user.save(function(err) {
+      if (err) {
+        return res.status(400).send({
+          message: err
+        });
+      }
+    });
+
+    // Return the User metadata and their respective token.
     return res.json({
-      token: jwt.sign({ _id: user._id, email: user.email, settings: user.settings }, "list-lessAPI")
+      token: userToken,
+      _id: user._id,
+      email: user.email,
+      settings: user.settings
     });
   });
 };

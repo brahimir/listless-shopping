@@ -27,8 +27,9 @@ var UserSchema = new Schema(
       type: Object,
       required: true
     },
-    authToken: {
-      type: String
+    token: {
+      type: String,
+      default: null
     }
   },
   { timestamps: true }
