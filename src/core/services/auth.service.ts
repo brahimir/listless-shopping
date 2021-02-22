@@ -3,7 +3,7 @@ import Vue from "vue";
 import VueAxios from "vue-axios";
 // Constants
 import { API_ROUTES } from "../../.env/api-routes";
-import { AUTH_TOKEN } from "../../.env/api-routes";
+import { AUTH_TYPE } from "../../.env/api-routes";
 // Models
 import { User } from "../_models/user.model";
 // Axios
@@ -20,7 +20,6 @@ const AuthService = {
     Vue.use(VueAxios, axios);
   },
 
-  // todo - store the User object in AppState here.
   login(credentials: any): Promise<any> {
     return axios
       .post(LOGIN_USER, credentials)
@@ -65,7 +64,7 @@ const AuthService = {
     // Set headers.
     const config: any = {
       headers: {
-        Authorization: AUTH_TOKEN + token
+        Authorization: AUTH_TYPE + token
       }
     };
 
