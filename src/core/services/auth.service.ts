@@ -2,18 +2,17 @@
 import Vue from "vue";
 import VueAxios from "vue-axios";
 // Constants
-import { API_ROUTES } from "../../.env/api-routes";
-import { AUTH_TYPE } from "../../.env/api-routes";
+import { API_ROUTES } from "@/.env/api-routes";
+import { AUTH_TYPE } from "@/.env/api-routes";
 // Models
-import { User } from "../_models/user.model";
+import { User } from "@/core/_models/user.model";
 // Axios
 import axios from "axios";
-import { ResultStorage } from "firebase-functions/lib/providers/testLab";
 
-// todo API Routes
-const REGISTER_USER = API_ROUTES.AUTH.USERS.REGISTER;
-const LOGIN_USER = API_ROUTES.AUTH.USERS.LOGIN;
-const GET_USER = API_ROUTES.AUTH.USERS.GET_USER;
+// API Routes
+const REGISTER_USER = API_ROUTES.AUTH.USER.REGISTER;
+const LOGIN_USER = API_ROUTES.AUTH.USER.LOGIN;
+const GET_USER_FROM_TOKEN = API_ROUTES.AUTH.USER.FROM_TOKEN;
 
 const AuthService = {
   init() {
@@ -24,14 +23,12 @@ const AuthService = {
     return axios
       .post(LOGIN_USER, credentials)
       .then((res: any) => {
-        // Store the token in local storage.
-        localStorage.setItem("token", res.data.token);
-        return this.getUserFromToken(res.data.token).then((user: User) => {
-          return user;
-        });
+        if (!res.data.user) {
+          return;
+        }
+        return res.data.user;
       })
       .catch((err: any) => {
-        console.log(err);
         return err;
       });
   },
@@ -46,10 +43,10 @@ const AuthService = {
     return axios
       .post(REGISTER_USER, user)
       .then((res: any) => {
+        console.log(res.data);
         return res.data;
       })
       .catch((err: any) => {
-        console.log(err);
         return err;
       });
   },
@@ -69,12 +66,11 @@ const AuthService = {
     };
 
     return axios
-      .post(GET_USER, null, config)
+      .post(GET_USER_FROM_TOKEN, null, config)
       .then((res: any) => {
         return res.data;
       })
       .catch((err: any) => {
-        console.log(err);
         return err;
       });
   },
