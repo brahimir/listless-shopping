@@ -4,10 +4,17 @@ module.exports = function(app) {
 
   app.route("/tasks").post(userHandlers.loginRequired, userHandlers.user);
 
-  // Auth Routes
+  // * AUTH Routes
   app.route("/auth/register").post(userHandlers.register);
   app.route("/auth/sign_in").post(userHandlers.signIn);
 
   // Get User from JWT token
-  app.route("/auth/user").post(userHandlers.user);
+  app.route("/auth/user/from_token").post(userHandlers.user);
+
+  // * LIST Routes
+  // Get User's Lists
+  app.route("/auth/user/lists/get").post(userHandlers.getAllUserLists);
+
+  // Get User's Active Lists
+  app.route("/auth/user/lists/get/active").post(userHandlers.getActiveUserList);
 };

@@ -17,7 +17,9 @@ exports.register = function(req, res) {
       });
     } else {
       user.hash_password = undefined;
-      return res.json(user);
+      return res.json({
+        user: user
+      });
     }
   });
 };
@@ -27,7 +29,9 @@ exports.signIn = function(req, res) {
   User.findOne({ email: req.body.email }, function(err, user) {
     if (err) throw err;
     if (!user || !user.comparePassword(req.body.password)) {
-      return res.status(401).json({ message: "Authentication failed. Invalid user or password." });
+      return res.status(401).json({
+        message: "Authentication failed. Invalid user or password."
+      });
     }
 
     // Generate and set User's auth token.
@@ -50,10 +54,61 @@ exports.signIn = function(req, res) {
     // Return the User metadata and their respective token.
     return res.json({
       token: userToken,
-      _id: user._id,
-      email: user.email,
-      settings: user.settings
+      user: {
+        _id: user._id,
+        email: user.email,
+        settings: user.settings
+      }
     });
+  });
+};
+
+// * LISTS
+exports.getAllUserLists = function(req, res) {
+  User.findOne({ _id: req.body._id }, function(err, user) {
+    if (err) throw err;
+    if (!user) {
+      return res.status(401).json({
+        message: `Error. Could not locate User with ${req.body._id}`
+      });
+    }
+
+    const userLists = user.profile.lists;
+    const response = {
+      user: {
+        lists: userLists
+      }
+    };
+
+    return res.json(response);
+  });
+};
+
+exports.getActiveUserList = function(req, res) {
+  User.findOne({ _id: req.body._id }, function(err, user) {
+    if (err) throw err;
+    if (!user) {
+      return res.status(401).json({
+        message: `Error. Could not locate User with ${req.body._id}`
+      });
+    }
+
+    const userLists = user.profile.lists;
+
+    let activeList;
+    userLists.forEach(element => {
+      if (element.isActive) {
+        activeList = element;
+      }
+    });
+
+    const response = {
+      user: {
+        activeList: activeList
+      }
+    };
+
+    return res.json(response);
   });
 };
 
