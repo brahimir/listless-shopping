@@ -10,7 +10,7 @@ module.exports = function(app) {
   app.route("/auth/logout").post(userHandlers.logout);
 
   // Get User from JWT token
-  app.route("/auth/user/from_token").post(userHandlers.user);
+  app.route("/auth/from_token").post(userHandlers.user);
 
   // * LIST Routes
   // Get User's Lists
@@ -18,4 +18,7 @@ module.exports = function(app) {
 
   // Get User's Active Lists
   app.route("/auth/user/lists/get/active").post(userHandlers.getActiveUserList);
+
+  // Update All User's Lists
+  app.route("/auth/user/lists/update").put(userHandlers.updateUserLists);
 };
