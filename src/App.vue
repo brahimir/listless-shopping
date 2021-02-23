@@ -5,13 +5,13 @@
 <template>
   <v-app>
     <!-- start:: AppBar -->
-    <AppBar />
+    <AppBar :currentUser="currentUser" />
     <!-- end:: AppBar -->
 
     <!-- start:: Content -->
     <v-main>
       <div class="container my-10">
-        <router-view />
+        <router-view :currentUser="currentUser" />
       </div>
     </v-main>
     <!-- end:: Content -->
@@ -25,14 +25,16 @@
 <script lang="ts">
 // Vue
 import Vue from "vue";
-// RxJS
-// ? todo
+import { mapGetters } from "vuex";
 // Components
 import AppBar from "@/components/layout/AppBar.vue";
 import Footer from "@/components/layout/Footer.vue";
 
 export default Vue.extend({
   components: { AppBar, Footer },
-  name: "App"
+  name: "App",
+  computed: {
+    ...mapGetters(["currentUser"])
+  }
 });
 </script>
