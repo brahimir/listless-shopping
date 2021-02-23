@@ -7,6 +7,7 @@ module.exports = function(app) {
   // * AUTH Routes
   app.route("/auth/register").post(userHandlers.register);
   app.route("/auth/sign_in").post(userHandlers.signIn);
+  app.route("/auth/logout").post(userHandlers.logout);
 
   // Get User from JWT token
   app.route("/auth/user/from_token").post(userHandlers.user);
