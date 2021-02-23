@@ -58,7 +58,7 @@
             <!-- start:: Login Failure Message -->
 
             <!-- start:: Login Success Message -->
-            <v-alert v-if="successLogin" type="error" dense text>
+            <v-alert v-if="successLogin" type="success" dense text>
               <div class="text-center">
                 successfully logged in!
               </div>
@@ -81,15 +81,15 @@
 </template>
 
 <script lang="ts">
+// Vue
 import Vue from "vue";
-// Models
-import { User } from "../../../core/_models/user.model";
-// Services
-import AuthService from "../../../core/services/auth.service";
 // Vuelidate
 import { validationMixin } from "vuelidate";
 import { email, required } from "vuelidate/lib/validators";
-import { LOGIN } from "@/core/services/store/auth.module";
+// Models
+import { User } from "@/core/_models/user.model";
+// Services
+import AuthService from "@/core/services/auth.service";
 
 export default Vue.extend({
   mixins: [validationMixin],
@@ -124,12 +124,22 @@ export default Vue.extend({
       };
 
       this.isLoading = true;
-      // todo - refactor: move these nested Promises to the auth service.
-      // send login request
-      this.$store
-        .dispatch(LOGIN, credentials)
-        // go to which page after successfully login
-        .then(() => this.$router.push("/home"));
+      Promise.resolve(AuthService.login(credentials)).then((user: User) => {
+        if (!user) {
+          this.errorLogin = true;
+          this.isLoading = false;
+        } else {
+          this.successLogin = true;
+          this.isLoading = false;
+          this.clearForm();
+
+          console.log(user);
+
+          // Update store and route to Home.
+          this.$store.dispatch("LOGIN", user);
+          this.$router.push("/home");
+        }
+      });
     },
 
     clearForm: function(): void {
