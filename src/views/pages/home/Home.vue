@@ -19,99 +19,227 @@
 <template>
   <div>
     <div v-if="!isLoading" class="content">
-      <h2 v-if="lists" class="text-center mb-10">your lists</h2>
+      <!-- start:: If currentUser -->
+      <div v-if="currentUser">
+        <div v-if="lists">
+          <h2 class="text-center mb-10">your lists</h2>
+          <!-- start:: User Lists -->
+          <div>
+            <v-card v-for="list in lists" :key="list.name" class="my-7" color="grey darken-4">
+              <v-img
+                height="150"
+                :src="require(`@/assets/media/category-images/${list.category.image}`)"
+              ></v-img>
+              <v-card-title>
+                {{ list.name }}
+              </v-card-title>
 
-      <div v-if="lists">
-        <v-card v-for="list in lists" :key="list.name" class="my-7" color="grey darken-4">
-          <v-img height="100" src="@/assets/media/category-images/groceries.jpg"></v-img>
-          <v-card-title>
-            {{ list.name }}
-          </v-card-title>
+              <v-card-subtitle>created on: {{ list.createdOn | moment }}</v-card-subtitle>
 
-          <v-card-subtitle>
-            <span class="font-weight-bold">Category: {{ list.category }}</span>
-          </v-card-subtitle>
+              <v-card-actions>
+                <v-chip :color="list.category.chip.color">
+                  <v-icon class="mr-1" small color="white">
+                    {{ list.category.chip.icon }}
+                  </v-icon>
+                  <span class="font-weight-bold">{{ list.category.name }}</span>
+                </v-chip>
+                <v-spacer></v-spacer>
 
-          <v-card-actions>
-            <div></div>
-            <v-spacer></v-spacer>
+                <v-btn icon @click="list.isActive = !list.isActive">
+                  <v-icon>{{ list.isActive ? "mdi-chevron-up" : "mdi-chevron-down" }}</v-icon>
+                </v-btn>
+              </v-card-actions>
 
-            <v-btn icon @click="list.isActive = !list.isActive">
-              <v-icon>{{ list.isActive ? "mdi-chevron-up" : "mdi-chevron-down" }}</v-icon>
-            </v-btn>
-          </v-card-actions>
+              <v-expand-transition>
+                <div v-show="list.isActive">
+                  <v-divider></v-divider>
 
-          <v-expand-transition>
-            <div v-show="list.isActive">
-              <v-divider></v-divider>
+                  <v-card-text>
+                    <!-- start:: Add Items to List -->
+                    <v-container fluid>
+                      <v-row>
+                        <v-col cols="12">
+                          <v-input @keyup.enter.native="addItem(input, list)">
+                            <v-text-field label="add some items..." v-model="input">
+                              <v-icon
+                                slot="append"
+                                @click="addItem(input, list)"
+                                :disabled="!input || isLoading"
+                              >
+                                mdi-plus
+                              </v-icon>
+                            </v-text-field>
+                          </v-input>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                    <!-- end:: Add Items to List -->
 
-              <v-card-text>
-                <!-- start:: Add Items to List -->
-                <v-container fluid>
-                  <v-row>
-                    <v-col cols="12">
-                      <v-input @keyup.enter.native="addItem(input)">
-                        <v-text-field label="add some items..." v-model="input">
-                          <v-icon slot="append" @click="addItem(input)" :disabled="!input || isLoading">
-                            mdi-plus
-                          </v-icon>
-                        </v-text-field>
-                      </v-input>
-                    </v-col>
-                  </v-row>
-                </v-container>
-                <!-- end:: Add Items to List -->
+                    <!-- start:: Items List -->
+                    <div>
+                      <v-list
+                        v-for="(item, index) in list.items"
+                        :key="index"
+                        :class="{ checked: item.checked }"
+                        outlined
+                      >
+                        <v-list-item>
+                          <!-- start:: List Item Checkbox -->
+                          <v-list-item-action>
+                            <v-checkbox
+                              color="secondary"
+                              v-model="item.checked"
+                              @click="toggleItem(item, list)"
+                            ></v-checkbox>
+                          </v-list-item-action>
+                          <!-- end:: List Item Checkbox -->
 
-                <!-- start:: Items List -->
-                <div>
-                  <v-list
-                    v-for="(item, index) in list.items"
-                    :key="index"
-                    :class="{ checked: item.checked }"
-                    outlined
-                  >
-                    <v-list-item>
-                      <!-- start:: List Item Checkbox -->
-                      <v-list-item-action>
-                        <v-checkbox
-                          color="secondary"
-                          v-model="item.checked"
-                          @click="toggleItem(index, item)"
-                        ></v-checkbox>
-                      </v-list-item-action>
-                      <!-- end:: List Item Checkbox -->
+                          <!-- start:: List Item Content -->
+                          <v-list-item-content>
+                            <v-list-item-title
+                              :class="{ isChecked: item.checked, 'grey--text': item.checked }"
+                            >
+                              {{ item.name | lowercase }}
+                            </v-list-item-title>
+                          </v-list-item-content>
+                          <!-- end:: List Item Content -->
 
-                      <!-- start:: List Item Content -->
-                      <v-list-item-content>
-                        <v-list-item-title
-                          :class="{ isChecked: item.checked, 'grey--text': item.checked }"
-                        >
-                          {{ item.name | lowercase }}
-                        </v-list-item-title>
-                      </v-list-item-content>
-                      <!-- end:: List Item Content -->
+                          <!-- start:: Remove Item -->
+                          <v-btn v-if="!item.checked" icon color="red" @click="removeItem(item, list)">
+                            <v-icon>mdi-delete</v-icon>
+                          </v-btn>
+                          <v-btn v-else icon color="grey" @click="removeItem(item, list)">
+                            <v-icon>mdi-delete</v-icon>
+                          </v-btn>
+                          <!-- end:: Remove Item -->
+                        </v-list-item>
+                      </v-list>
+                    </div>
+                    <!-- end:: Items List -->
 
-                      <!-- start:: Remove Item -->
-                      <v-btn v-if="!item.checked" icon color="red" @click="removeItem(item)">
-                        <v-icon>mdi-delete</v-icon>
-                      </v-btn>
-                      <v-btn v-else icon color="grey" @click="removeItem(item)">
-                        <v-icon>mdi-delete</v-icon>
-                      </v-btn>
-                      <!-- end:: Remove Item -->
-                    </v-list-item>
-                  </v-list>
+                    <div class="mt-10">
+                      <v-btn color="warning" block tile>archive list</v-btn>
+                    </div>
+                  </v-card-text>
                 </div>
-                <!-- end:: Items List -->
-
-                <div class="mt-10">
-                  <v-btn color="warning" block tile>archive list</v-btn>
-                </div>
-              </v-card-text>
-            </div>
-          </v-expand-transition>
-        </v-card>
+              </v-expand-transition>
+            </v-card>
+          </div>
+          <!-- end:: User Lists -->
+        </div>
       </div>
+      <!-- end:: If currentUser -->
+
+      <!-- start:: If NOT currentUser -->
+      <div v-if="!currentUser">
+        <div v-if="defaultLists">
+          <h2 class="text-center mb-10">sample list</h2>
+          <!-- start:: User Lists -->
+          <div>
+            <v-card v-for="list in defaultLists" :key="list.name" class="my-7" color="grey darken-4">
+              <v-img
+                height="150"
+                :src="require(`@/assets/media/category-images/${list.category.image}`)"
+              ></v-img>
+              <v-card-title>
+                {{ list.name }}
+              </v-card-title>
+
+              <v-card-subtitle>created on: {{ list.createdOn | moment }}</v-card-subtitle>
+
+              <v-card-actions>
+                <v-chip :color="list.category.chip.color">
+                  <v-icon class="mr-1" small color="white">
+                    {{ list.category.chip.icon }}
+                  </v-icon>
+                  <span class="font-weight-bold">{{ list.category.name }}</span>
+                </v-chip>
+                <v-spacer></v-spacer>
+
+                <v-btn icon @click="list.isActive = !list.isActive">
+                  <v-icon>{{ list.isActive ? "mdi-chevron-up" : "mdi-chevron-down" }}</v-icon>
+                </v-btn>
+              </v-card-actions>
+
+              <v-expand-transition>
+                <div v-show="list.isActive">
+                  <v-divider></v-divider>
+
+                  <v-card-text>
+                    <!-- start:: Add Items to List -->
+                    <v-container fluid>
+                      <v-row>
+                        <v-col cols="12">
+                          <v-input @keyup.enter.native="addItem(input, list)">
+                            <v-text-field label="add some items..." v-model="input">
+                              <v-icon
+                                slot="append"
+                                @click="addItem(input, list)"
+                                :disabled="!input || isLoading"
+                              >
+                                mdi-plus
+                              </v-icon>
+                            </v-text-field>
+                          </v-input>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                    <!-- end:: Add Items to List -->
+
+                    <!-- start:: Items List -->
+                    <div>
+                      <v-list
+                        v-for="(item, index) in list.items"
+                        :key="index"
+                        :class="{ checked: item.checked }"
+                        outlined
+                      >
+                        <v-list-item>
+                          <!-- start:: List Item Checkbox -->
+                          <v-list-item-action>
+                            <v-checkbox
+                              color="secondary"
+                              v-model="item.checked"
+                              @click="toggleItem(item, list)"
+                            ></v-checkbox>
+                          </v-list-item-action>
+                          <!-- end:: List Item Checkbox -->
+
+                          <!-- start:: List Item Content -->
+                          <v-list-item-content>
+                            <v-list-item-title
+                              :class="{ isChecked: item.checked, 'grey--text': item.checked }"
+                            >
+                              {{ item.name | lowercase }}
+                            </v-list-item-title>
+                          </v-list-item-content>
+                          <!-- end:: List Item Content -->
+
+                          <!-- start:: Remove Item -->
+                          <v-btn v-if="!item.checked" icon color="red" @click="removeItem(item, list)">
+                            <v-icon>mdi-delete</v-icon>
+                          </v-btn>
+                          <v-btn v-else icon color="grey" @click="removeItem(item, list)">
+                            <v-icon>mdi-delete</v-icon>
+                          </v-btn>
+                          <!-- end:: Remove Item -->
+                        </v-list-item>
+                      </v-list>
+                    </div>
+                    <!-- end:: Items List -->
+
+                    <div class="mt-10">
+                      <v-btn color="warning" block tile>archive list</v-btn>
+                    </div>
+                  </v-card-text>
+                </div>
+              </v-expand-transition>
+            </v-card>
+          </div>
+          <!-- end:: User Lists -->
+        </div>
+      </div>
+      <!-- end:: If NOT currentUser -->
     </div>
 
     <!-- start:: Loading spinner -->
@@ -131,23 +259,40 @@ import { List } from "./_models/list.model";
 // Services
 import HomeService from "./Home.service";
 import FiltersService from "../../../core/services/filters.service";
+// Moment
+import moment from "moment";
 // Components
 import Spinner from "@/components/content/Spinner.vue";
 
-// Default empty list if the list on the server is null.
-const defaultList: List = {
-  category: "example",
-  name: "your list",
-  items: [],
-  isActive: true
-};
-
-const defaultLists: List[] = [
+// Default list for non currentUser.
+const defaultLists: List[] | null = [
   {
-    category: "example",
-    name: "your list",
-    items: [],
-    isActive: true
+    category: {
+      index: "example",
+      name: "example",
+      image: "example.jpg",
+      chip: {
+        icon: "mdi-food-pencil",
+        color: "yellow"
+      }
+    },
+    items: [
+      {
+        name: "pencils",
+        checked: false
+      },
+      {
+        name: "erasers",
+        checked: false
+      },
+      {
+        name: "more items...",
+        checked: false
+      }
+    ],
+    name: "example list",
+    isActive: true,
+    createdOn: new Date().toISOString()
   }
 ];
 
@@ -157,34 +302,37 @@ export default Vue.extend({
 
   data: () => ({
     input: null,
-    list: defaultList,
     lists: defaultLists,
     isLoading: false
   }),
 
   methods: {
-    addItem: function(item: string): void {
+    addItem: function(input: string | null, list: List): void {
+      if (!input) return;
+
       // Create the new item.
       const newItem: Item = {
-        name: item.toLowerCase(),
+        name: input.toLowerCase(),
         checked: false
       };
 
-      this.list.items.unshift(newItem);
-      this.updateActiveList(this.list);
+      list.items.unshift(newItem);
+      this.lists.splice(this.lists.indexOf(list), 1, list);
+      this.updateLists();
 
-      this.input = null;
+      input = null;
     },
 
-    removeItem: function(item: Item): void {
+    removeItem: function(item: Item, list: List): void {
       // Get index of Item to remove
-      const index: number = this.list.items.indexOf(item);
+      const index: number = list.items.indexOf(item);
 
-      this.list.items.splice(index, 1);
-      this.updateActiveList(this.list);
+      list.items.splice(index, 1);
+      this.lists.splice(this.lists.indexOf(list), 1, list);
+      this.updateLists();
     },
 
-    toggleItem: function(index: number, item: Item): void {
+    toggleItem: function(item: Item, list: List): void {
       // todo - shifts item successfully, but "checks" the next item in the list.
       // if (item.checked) {
       //   this.list.items.splice(index, 1);
@@ -193,39 +341,39 @@ export default Vue.extend({
       //   this.list.items.splice(index, 1);
       //   this.list.items.unshift(item);
       // }
+      this.lists.splice(this.lists.indexOf(list), 1, list);
+      this.updateLists();
+    },
 
-      this.updateActiveList(this.list);
+    updateLists: function(): void {
+      // Resolve the Promise from the HomeService request.
+      Promise.resolve(HomeService.updateUsersLists(this.currentUser._id, this.lists)).then(res => {
+        this.lists = res.data.updatedLists;
+      });
     },
 
     getAllUserLists: function(): void {
+      this.isLoading = true;
       // Resolve the Promise from the HomeService request.
       Promise.resolve(HomeService.getAllUserLists(this.currentUser._id)).then((data: List[]) => {
         this.lists = data;
         this.isLoading = false;
       });
-    },
-
-    getActiveList: function(): void {
-      this.isLoading = true;
-      // Resolve the Promise from the HomeService request.
-      Promise.resolve(HomeService.getUserActiveList(this.currentUser._id)).then((data: List) => {
-        this.list = data;
-        this.isLoading = false;
-      });
-    },
-
-    updateActiveList: function(body: List): void {
-      // Promise.resolve(HomeService.updateUserActiveList(body));
     }
+
+    // todo - this will be for the in memory list for the client-side list (not logged in).
+    // updateInMemoryList: function(): void {}
   },
 
   filters: {
-    lowercase: FiltersService.lowercase
+    lowercase: FiltersService.lowercase,
+    moment: function(date: string) {
+      return moment(date).format("MMMM Do YYYY, h:mm A");
+    }
   },
 
   mounted() {
     this.getAllUserLists();
-    this.getActiveList();
   },
   computed: {
     ...mapGetters(["currentUser"])

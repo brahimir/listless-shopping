@@ -14,8 +14,7 @@ const UPDATE_ONE_LIST = API_ROUTES.ONE_LIST.UPDATE_ONE_LIST;
 
 // API Routes
 const GET_ALL_USER_LISTS = API_ROUTES.AUTH.USER.LISTS.GET_ALL_LISTS;
-const GET_USER_ACTIVE_LIST = API_ROUTES.AUTH.USER.LISTS.GET_ACTIVE_LIST;
-const UPDATE_USER_ACTIVE_LIST = API_ROUTES.AUTH.USER.LISTS.GET_ACTIVE_LIST;
+const UPDATE_USER_ACTIVE_LIST = API_ROUTES.AUTH.USER.LISTS.UPDATE_ALL_LISTS;
 
 const HomeService = {
   init() {
@@ -38,26 +37,10 @@ const HomeService = {
       });
   },
 
-  getUserActiveList(userId: string) {
-    const body = {
-      _id: userId
-    };
-
-    return axios
-      .post(GET_USER_ACTIVE_LIST, body)
-      .then(function(res: any) {
-        return res.data.activeList;
-      })
-      .catch(function(err: any) {
-        // todo
-        console.log(err);
-      });
-  },
-
-  updateUserActiveList(userId: string, newList: List) {
+  updateUsersLists(userId: string, lists: List[]) {
     const body: any = {
-      listId: userId,
-      newList: newList
+      _id: userId,
+      lists: lists
     };
 
     return axios
