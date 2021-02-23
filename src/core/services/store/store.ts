@@ -19,14 +19,20 @@ const getters = {
 };
 
 const actions = {
-  SET_USER(context: any, user: any) {
-    context.commit("setUser", user);
+  LOGIN(context: any, user: any) {
+    context.commit("login", user);
+  },
+  LOGOUT(context: any) {
+    context.commit("logout");
   }
 };
 
 const mutations = {
-  setUser(state: any, user: any) {
+  login(state: any, user: any) {
     state.user = user;
+  },
+  logout(state: any) {
+    state.user = null;
   }
 };
 

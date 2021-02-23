@@ -12,6 +12,7 @@ import axios from "axios";
 // API Routes
 const REGISTER_USER = API_ROUTES.AUTH.USER.REGISTER;
 const LOGIN_USER = API_ROUTES.AUTH.USER.LOGIN;
+const LOGOUT_USER = API_ROUTES.AUTH.USER.LOGOUT;
 const GET_USER_FROM_TOKEN = API_ROUTES.AUTH.USER.FROM_TOKEN;
 
 const AuthService = {
@@ -27,6 +28,25 @@ const AuthService = {
           return;
         }
         return res.data.user;
+      })
+      .catch((err: any) => {
+        return err;
+      });
+  },
+
+  logout(userId: string): Promise<any> {
+    const body: any = {
+      _id: userId
+    };
+    return axios
+      .post(LOGOUT_USER, body)
+      .then((res: any) => {
+        if (!res.data.isLoggedOut) {
+          // todo
+          console.log("Error logging User out.");
+          return;
+        }
+        return res.data.isLoggedOut;
       })
       .catch((err: any) => {
         return err;
@@ -73,11 +93,6 @@ const AuthService = {
       .catch((err: any) => {
         return err;
       });
-  },
-
-  // todo
-  logout(): void {
-    // todo Remove the token from local storage.
   }
 };
 
