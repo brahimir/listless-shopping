@@ -75,9 +75,7 @@ exports.getAllUserLists = function(req, res) {
 
     const userLists = user.profile.lists;
     const response = {
-      user: {
-        lists: userLists
-      }
+      lists: userLists
     };
 
     return res.json(response);
@@ -103,9 +101,7 @@ exports.getActiveUserList = function(req, res) {
     });
 
     const response = {
-      user: {
-        activeList: activeList
-      }
+      activeList: activeList
     };
 
     return res.json(response);
