@@ -13,68 +13,64 @@ const GET_ONE_LIST = API_ROUTES.ONE_LIST.GET_ONE_LIST;
 const UPDATE_ONE_LIST = API_ROUTES.ONE_LIST.UPDATE_ONE_LIST;
 
 // API Routes
-const GET_USER_BY_JWT_TOKEN = API_ROUTES.AUTH.USERS.GET_USER;
+const GET_ALL_USER_LISTS = API_ROUTES.AUTH.USER.LISTS.GET_ALL_LISTS;
+const GET_USER_ACTIVE_LIST = API_ROUTES.AUTH.USER.LISTS.GET_ACTIVE_LIST;
+const UPDATE_USER_ACTIVE_LIST = API_ROUTES.AUTH.USER.LISTS.GET_ACTIVE_LIST;
 
 const HomeService = {
   init() {
     Vue.use(VueAxios, axios);
   },
 
-  getOneList(): Promise<any> {
-    return axios
-      .get(GET_ONE_LIST)
-      .then(function(res: any) {
-        return res.data;
-      })
-      .catch(function(err: any) {
-        console.log(err);
-      });
-  },
-
-  updateOneList(body: List): Promise<any> {
-    return axios
-      .put(UPDATE_ONE_LIST, body)
-      .then(function(res: any) {
-        return res;
-      })
-      .catch(function(err: any) {
-        console.log(err);
-      });
-  },
-
-  /**
-   * Gets the current logged in user via JWT token.
-   *
-   * @returns {Promise<any>} The User as a Promise.
-   */
-  getUser(token: string): Promise<any> {
-    const headers = {
-      "Content-Type": "application/x-www-form-urlencoded",
-      "Content-Length": token.length,
-      Authorization: `JWT ${token}`
+  getAllUserLists(userId: string) {
+    const body = {
+      _id: userId
     };
 
     return axios
-      .post(GET_USER_BY_JWT_TOKEN, headers)
+      .post(GET_ALL_USER_LISTS, body)
       .then(function(res: any) {
-        console.log(res);
-        return res.data[0];
+        return res.data.lists;
       })
       .catch(function(err: any) {
-        // handle error
+        // todo
+        console.log(err);
+      });
+  },
+
+  getUserActiveList(userId: string) {
+    const body = {
+      _id: userId
+    };
+
+    return axios
+      .post(GET_USER_ACTIVE_LIST, body)
+      .then(function(res: any) {
+        return res.data.activeList;
+      })
+      .catch(function(err: any) {
+        // todo
+        console.log(err);
+      });
+  },
+
+  updateUserActiveList(userId: string, newList: List) {
+    const body: any = {
+      listId: userId,
+      newList: newList
+    };
+
+    return axios
+      .put(UPDATE_USER_ACTIVE_LIST, body)
+      .then(function(res: any) {
+        console.log(res);
+        return res;
+      })
+      .catch(function(err: any) {
+        // todo
         console.log(err);
       });
   }
-
-  // todo
-  // updateList(index: string, body: List) {}
-
-  //   todo
-  //   getUserLists(userID: string) {}
-
-  //   updateUserLists(userID: string, body: List) {}
-
-  //   getUserActiveList() {}
 };
 
 export default HomeService;

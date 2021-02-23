@@ -19,9 +19,96 @@
 <template>
   <div>
     <div v-if="!isLoading" class="content">
-      <div v-if="currentUser">Hello {{ currentUser }}</div>
-
       <h2 class="text-center mb-10">{{ list.name | lowercase }}</h2>
+
+      <v-card v-for="list in lists" :key="list.name" color="grey darken-4">
+        <v-card-title>
+          {{ list.name }}
+        </v-card-title>
+
+        <v-card-subtitle>
+          <span class="font-weight-bold">Category: {{ list.category }}</span>
+        </v-card-subtitle>
+
+        <v-card-actions>
+          <div></div>
+          <v-spacer></v-spacer>
+
+          <v-btn icon @click="list.isActive = !list.isActive">
+            <v-icon>{{ list.isActive ? "mdi-chevron-up" : "mdi-chevron-down" }}</v-icon>
+          </v-btn>
+        </v-card-actions>
+
+        <v-expand-transition>
+          <div v-show="list.isActive">
+            <v-divider></v-divider>
+
+            <v-card-text>
+              <!-- start:: Add Items to List -->
+              <v-container fluid>
+                <v-row>
+                  <v-col cols="12">
+                    <v-input @keyup.enter.native="addItem(input)">
+                      <v-text-field label="add some items..." v-model="input">
+                        <v-icon slot="append" @click="addItem(input)" :disabled="!input || isLoading">
+                          mdi-plus
+                        </v-icon>
+                      </v-text-field>
+                    </v-input>
+                  </v-col>
+                </v-row>
+              </v-container>
+              <!-- end:: Add Items to List -->
+
+              <!-- start:: Items List -->
+              <div>
+                <v-list
+                  v-for="(item, index) in list.items"
+                  :key="index"
+                  :class="{ checked: item.checked }"
+                  outlined
+                >
+                  <v-list-item>
+                    <!-- start:: List Item Checkbox -->
+                    <v-list-item-action>
+                      <v-checkbox
+                        color="secondary"
+                        v-model="item.checked"
+                        @click="toggleItem(index, item)"
+                      ></v-checkbox>
+                    </v-list-item-action>
+                    <!-- end:: List Item Checkbox -->
+
+                    <!-- start:: List Item Content -->
+                    <v-list-item-content>
+                      <v-list-item-title
+                        :class="{ isChecked: item.checked, 'grey--text': item.checked }"
+                      >
+                        {{ item.name | lowercase }}
+                      </v-list-item-title>
+                    </v-list-item-content>
+                    <!-- end:: List Item Content -->
+
+                    <!-- start:: Remove Item -->
+                    <v-btn v-if="!item.checked" icon color="red" @click="removeItem(item)">
+                      <v-icon>mdi-delete</v-icon>
+                    </v-btn>
+                    <v-btn v-else icon color="grey" @click="removeItem(item)">
+                      <v-icon>mdi-delete</v-icon>
+                    </v-btn>
+                    <!-- end:: Remove Item -->
+                  </v-list-item>
+                </v-list>
+              </div>
+              <!-- end:: Items List -->
+
+              <div class="mt-10">
+                <v-btn color="warning" block tile outlined>archive list</v-btn>
+              </div>
+            </v-card-text>
+          </div>
+        </v-expand-transition>
+      </v-card>
 
       <!-- start:: Add Items to List -->
       <v-container fluid>
@@ -112,6 +199,15 @@ const defaultList: List = {
   isActive: true
 };
 
+const defaultLists: List[] = [
+  {
+    category: "example",
+    name: "your list",
+    items: [],
+    isActive: true
+  }
+];
+
 export default Vue.extend({
   components: { Spinner },
   name: "Home",
@@ -119,6 +215,7 @@ export default Vue.extend({
   data: () => ({
     input: null,
     list: defaultList,
+    lists: defaultLists,
     isLoading: false
   }),
 
@@ -130,11 +227,8 @@ export default Vue.extend({
         checked: false
       };
 
-      // Add newItem to local copy of array.
       this.list.items.unshift(newItem);
-
-      // Update List on server.
-      this.updateList(this.list);
+      this.updateActiveList(this.list);
 
       this.input = null;
     },
@@ -143,11 +237,8 @@ export default Vue.extend({
       // Get index of Item to remove
       const index: number = this.list.items.indexOf(item);
 
-      // Remove the Item
       this.list.items.splice(index, 1);
-
-      // Update List on server.
-      this.updateList(this.list);
+      this.updateActiveList(this.list);
     },
 
     toggleItem: function(index: number, item: Item): void {
@@ -160,24 +251,29 @@ export default Vue.extend({
       //   this.list.items.unshift(item);
       // }
 
-      this.updateList(this.list);
+      this.updateActiveList(this.list);
     },
 
-    getList: function(): void {
+    getAllUserLists: function(): void {
+      // Resolve the Promise from the HomeService request.
+      Promise.resolve(HomeService.getAllUserLists(this.currentUser._id)).then((data: List[]) => {
+        this.lists = data;
+        console.log(this.lists);
+        this.isLoading = false;
+      });
+    },
+
+    getActiveList: function(): void {
       this.isLoading = true;
       // Resolve the Promise from the HomeService request.
-      Promise.resolve(HomeService.getOneList()).then(data => {
+      Promise.resolve(HomeService.getUserActiveList(this.currentUser._id)).then((data: List) => {
         this.list = data;
         this.isLoading = false;
       });
     },
 
-    updateList: function(body: List): void {
-      Promise.resolve(HomeService.updateOneList(body));
-    },
-
-    getLocalToken: function(): void {
-      console.log(window.localStorage.getItem("token"));
+    updateActiveList: function(body: List): void {
+      // Promise.resolve(HomeService.updateUserActiveList(body));
     }
   },
 
@@ -186,8 +282,8 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.getLocalToken();
-    this.getList();
+    this.getAllUserLists();
+    this.getActiveList();
   },
   computed: {
     ...mapGetters(["currentUser"])
