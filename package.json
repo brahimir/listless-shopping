@@ -21,6 +21,7 @@
     "vue": "^2.6.12",
     "vue-axios": "^3.2.4",
     "vue-material-design-icons": "^4.11.0",
+    "vue-moment": "^4.1.0",
     "vue-router": "~3.5.1",
     "vue-rx": "^6.2.0",
     "vuelidate": "^0.7.6",
