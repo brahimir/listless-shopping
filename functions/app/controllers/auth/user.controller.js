@@ -63,6 +63,38 @@ exports.signIn = function(req, res) {
   });
 };
 
+exports.logout = function(req, res) {
+  User.findOne({ _id: req.body._id }, function(err, user) {
+    if (err) throw err;
+    if (!user) {
+      return res.status(401).json({
+        message: `Error. Could not find a User with ${req._id}`
+      });
+    }
+
+    user.token = null;
+
+    // Save User's auth token to server.
+    user.save(function(err) {
+      if (err) {
+        return res.status(400).send({
+          message: err
+        });
+      }
+    });
+
+    // Return the User metadata and their respective token.
+    return res.json({
+      isLoggedOut: true,
+      user: {
+        _id: user._id,
+        email: user.email,
+        settings: user.settings
+      }
+    });
+  });
+};
+
 // * LISTS
 exports.getAllUserLists = function(req, res) {
   User.findOne({ _id: req.body._id }, function(err, user) {
