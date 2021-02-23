@@ -98,7 +98,7 @@ import Vue from "vue";
 // Models
 import { User } from "../../../core/_models/user.model";
 // Services
-import AuthService from "../../../core/services/auth.service";
+import AuthService from "@/core/services/auth.service";
 // Vuelidate
 import { validationMixin } from "vuelidate";
 import { email, required, minLength } from "vuelidate/lib/validators";
@@ -144,14 +144,16 @@ export default Vue.extend({
       };
 
       this.isLoading = true;
-      Promise.resolve(AuthService.register(user)).then(data => {
-        if (data) {
+      Promise.resolve(AuthService.register(user)).then(res => {
+        if (!res.user) {
+          this.errorRegister = true;
+          this.isLoading = false;
+        } else {
           this.successRegister = true;
           this.isLoading = false;
           this.clearForm();
-        } else {
-          this.errorRegister = true;
-          this.isLoading = false;
+
+          this.$router.push("/home");
         }
       });
     },

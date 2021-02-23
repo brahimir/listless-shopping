@@ -133,8 +133,6 @@ export default Vue.extend({
           this.isLoading = false;
           this.clearForm();
 
-          console.log(user);
-
           // Update store and route to Home.
           this.$store.dispatch("LOGIN", user);
           this.$router.push("/home");
