@@ -30,7 +30,8 @@ const AuthService = {
         return res.data.user;
       })
       .catch((err: any) => {
-        return err;
+        // todo
+        console.log(err);
       });
   },
 
@@ -49,7 +50,8 @@ const AuthService = {
         return res.data.isLoggedOut;
       })
       .catch((err: any) => {
-        return err;
+        // todo
+        console.log(err);
       });
   },
 
@@ -67,7 +69,8 @@ const AuthService = {
         return res.data;
       })
       .catch((err: any) => {
-        return err;
+        // todo
+        console.log(err);
       });
   },
 
@@ -91,7 +94,8 @@ const AuthService = {
         return res.data;
       })
       .catch((err: any) => {
-        return err;
+        // todo
+        console.log(err);
       });
   }
 };
