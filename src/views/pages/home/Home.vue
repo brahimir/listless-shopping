@@ -222,7 +222,12 @@
                           <!-- end:: List Item Content -->
 
                           <!-- start:: Remove Item -->
-                          <v-btn v-if="!item.checked" icon color="red" @click="removeItem(item, list)">
+                          <v-btn
+                            v-if="!item.checked"
+                            icon
+                            color="red"
+                            @click="sampleRemoveItem(item, list)"
+                          >
                             <v-icon>mdi-delete</v-icon>
                           </v-btn>
                           <v-btn v-else icon color="grey" @click="sampleRemoveItem(item, list)">
