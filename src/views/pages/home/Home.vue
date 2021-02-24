@@ -25,7 +25,7 @@
           <h2 class="text-center mb-10">your lists</h2>
           <!-- start:: User Lists -->
           <div>
-            <v-card v-for="list in lists" :key="list.name" class="my-7" color="grey darken-4">
+            <v-card v-for="list in lists" :key="list.name" class="my-7" color="grey darken-4" tile>
               <v-img
                 height="150"
                 :src="require(`@/assets/media/category-images/${list.category.image}`)"
@@ -45,7 +45,7 @@
                 </v-chip>
                 <v-spacer></v-spacer>
 
-                <v-btn icon @click="list.isActive = !list.isActive">
+                <v-btn icon @click="collapseLists(list)">
                   <v-icon>{{ list.isActive ? "mdi-chevron-up" : "mdi-chevron-down" }}</v-icon>
                 </v-btn>
               </v-card-actions>
@@ -62,6 +62,7 @@
                           <v-input @keyup.enter.native="addItem(input, list)">
                             <v-text-field label="add some items..." v-model="input">
                               <v-icon
+                                color="green"
                                 slot="append"
                                 @click="addItem(input, list)"
                                 :disabled="!input || isLoading"
@@ -127,16 +128,20 @@
           </div>
           <!-- end:: User Lists -->
         </div>
+
+        <!-- start:: Add a new List -->
+        <CreateList />
+        <!-- end:: Add a new List -->
       </div>
       <!-- end:: If currentUser -->
 
-      <!-- start:: If NOT currentUser -->
+      <!-- start:: If NOT currentUser - sample list -->
       <div v-if="!currentUser">
-        <div v-if="defaultLists">
+        <div v-if="lists">
           <h2 class="text-center mb-10">sample list</h2>
           <!-- start:: User Lists -->
           <div>
-            <v-card v-for="list in defaultLists" :key="list.name" class="my-7" color="grey darken-4">
+            <v-card v-for="list in lists" :key="list.name" class="my-7" color="grey darken-4" tile>
               <v-img
                 height="150"
                 :src="require(`@/assets/media/category-images/${list.category.image}`)"
@@ -170,11 +175,12 @@
                     <v-container fluid>
                       <v-row>
                         <v-col cols="12">
-                          <v-input @keyup.enter.native="addItem(input, list)">
+                          <v-input @keyup.enter.native="sampleAddItem(input, list)">
                             <v-text-field label="add some items..." v-model="input">
                               <v-icon
+                                color="green"
                                 slot="append"
-                                @click="addItem(input, list)"
+                                @click="sampleAddItem(input, list)"
                                 :disabled="!input || isLoading"
                               >
                                 mdi-plus
@@ -200,7 +206,7 @@
                             <v-checkbox
                               color="secondary"
                               v-model="item.checked"
-                              @click="toggleItem(item, list)"
+                              @click="sampleToggleItem(item, list)"
                             ></v-checkbox>
                           </v-list-item-action>
                           <!-- end:: List Item Checkbox -->
@@ -219,7 +225,7 @@
                           <v-btn v-if="!item.checked" icon color="red" @click="removeItem(item, list)">
                             <v-icon>mdi-delete</v-icon>
                           </v-btn>
-                          <v-btn v-else icon color="grey" @click="removeItem(item, list)">
+                          <v-btn v-else icon color="grey" @click="sampleRemoveItem(item, list)">
                             <v-icon>mdi-delete</v-icon>
                           </v-btn>
                           <!-- end:: Remove Item -->
@@ -229,7 +235,7 @@
                     <!-- end:: Items List -->
 
                     <div class="mt-10">
-                      <v-btn color="warning" block tile>archive list</v-btn>
+                      <v-btn @click="sampleClearList" color="error" block tile>clear list</v-btn>
                     </div>
                   </v-card-text>
                 </div>
@@ -239,7 +245,7 @@
           <!-- end:: User Lists -->
         </div>
       </div>
-      <!-- end:: If NOT currentUser -->
+      <!-- end:: If NOT currentUser - sample list -->
     </div>
 
     <!-- start:: Loading spinner -->
@@ -263,17 +269,18 @@ import FiltersService from "../../../core/services/filters.service";
 import moment from "moment";
 // Components
 import Spinner from "@/components/content/Spinner.vue";
+import CreateList from "@/views/pages/home/_dialogs/CreateList.vue";
 
 // Default list for non currentUser.
 const defaultLists: List[] | null = [
   {
     category: {
-      index: "example",
-      name: "example",
-      image: "example.jpg",
+      index: "sample",
+      name: "sample",
+      image: "sample.jpg",
       chip: {
-        icon: "mdi-food-pencil",
-        color: "yellow"
+        icon: "mdi-pencil",
+        color: "yellow darken-3"
       }
     },
     items: [
@@ -290,14 +297,14 @@ const defaultLists: List[] | null = [
         checked: false
       }
     ],
-    name: "example list",
+    name: "sample list",
     isActive: true,
     createdOn: new Date().toISOString()
   }
 ];
 
 export default Vue.extend({
-  components: { Spinner },
+  components: { Spinner, CreateList },
   name: "Home",
 
   data: () => ({
@@ -307,6 +314,14 @@ export default Vue.extend({
   }),
 
   methods: {
+    // * User List functions
+
+    /**
+     * Adds User input to the specified list.
+     *
+     * @param input The User's input
+     * @param list  The List to add to.
+     */
     addItem: function(input: string | null, list: List): void {
       if (!input) return;
 
@@ -320,9 +335,15 @@ export default Vue.extend({
       this.lists.splice(this.lists.indexOf(list), 1, list);
       this.updateLists();
 
-      input = null;
+      this.input = null;
     },
 
+    /**
+     * Removes an Item from the specified list.
+     *
+     * @param item The Item to remove.
+     * @param list  The List to remove from.
+     */
     removeItem: function(item: Item, list: List): void {
       // Get index of Item to remove
       const index: number = list.items.indexOf(item);
@@ -332,6 +353,14 @@ export default Vue.extend({
       this.updateLists();
     },
 
+    /**
+     * todo
+     * Toggles an item as checked or unchecked (functionality will shift the item to the bottom of the
+     * list).
+     *
+     * @param item The Item to toggle.
+     * @param list  The List the Item belongs to.
+     */
     toggleItem: function(item: Item, list: List): void {
       // todo - shifts item successfully, but "checks" the next item in the list.
       // if (item.checked) {
@@ -341,28 +370,117 @@ export default Vue.extend({
       //   this.list.items.splice(index, 1);
       //   this.list.items.unshift(item);
       // }
-      this.lists.splice(this.lists.indexOf(list), 1, list);
+      // this.lists.splice(this.lists.indexOf(list), 1, list);
       this.updateLists();
     },
 
+    /**
+     * Updates the User's lists to the server.
+     */
     updateLists: function(): void {
       // Resolve the Promise from the HomeService request.
-      Promise.resolve(HomeService.updateUsersLists(this.currentUser._id, this.lists)).then(res => {
-        this.lists = res.data.updatedLists;
-      });
+      Promise.resolve(HomeService.updateUsersLists(this.currentUser._id, this.lists)).then();
     },
 
+    /**
+     * Retreives the User's list from the server.
+     */
     getAllUserLists: function(): void {
       this.isLoading = true;
+
+      // If there is no currentUser, fetch the sampleList from localstorage.
+      if (!this.currentUser) {
+        this.sampleGetLists();
+        this.isLoading = false;
+        return;
+      }
       // Resolve the Promise from the HomeService request.
       Promise.resolve(HomeService.getAllUserLists(this.currentUser._id)).then((data: List[]) => {
         this.lists = data;
         this.isLoading = false;
       });
-    }
+    },
 
-    // todo - this will be for the in memory list for the client-side list (not logged in).
-    // updateInMemoryList: function(): void {}
+    /**
+     * Collapses other lists while a new list is opened.
+     *
+     * @param list The list that was selected and opened.
+     */
+    collapseLists: function(list: List): void {
+      list.isActive = !list.isActive;
+
+      this.lists.forEach(element => {
+        if (this.lists.indexOf(element) != this.lists.indexOf(list)) {
+          element.isActive = false;
+        }
+      });
+
+      this.updateLists();
+    },
+
+    // * sample List functions
+
+    sampleAddItem: function(input: string, list: List): void {
+      const newItem: Item = {
+        name: input,
+        checked: false
+      };
+
+      list.items.unshift(newItem);
+      this.lists.splice(this.lists.indexOf(list), 1, list);
+      this.sampleUpdateLists();
+
+      this.input = null;
+      // todo
+    },
+
+    sampleRemoveItem: function(item: Item, list: List): void {
+      // Get index of Item to remove
+      const index: number = list.items.indexOf(item);
+
+      list.items.splice(index, 1);
+      this.lists.splice(this.lists.indexOf(list), 1, list);
+      this.sampleUpdateLists();
+    },
+
+    sampleToggleItem: function(): void {
+      // todo
+      this.sampleUpdateLists();
+    },
+
+    sampleUpdateLists: function(): void {
+      window.localStorage.setItem("sampleLists", JSON.stringify(this.lists));
+    },
+
+    sampleGetLists: function(): void {
+      const sampleLists: string | null = window.localStorage.getItem("sampleLists");
+
+      if (!sampleLists) this.lists = defaultLists;
+      else this.lists = JSON.parse(sampleLists);
+    },
+
+    /**
+     * Clears the sample list.
+     */
+    sampleClearList: function(): void {
+      this.lists = [
+        {
+          category: {
+            index: "sample",
+            name: "sample",
+            image: "sample.jpg",
+            chip: {
+              icon: "mdi-pencil",
+              color: "yellow darken-3"
+            }
+          },
+          items: [],
+          name: "sample list",
+          isActive: true,
+          createdOn: new Date().toISOString()
+        }
+      ];
+    }
   },
 
   filters: {

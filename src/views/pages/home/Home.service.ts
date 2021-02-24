@@ -46,7 +46,6 @@ const HomeService = {
     return axios
       .put(UPDATE_USER_ACTIVE_LIST, body)
       .then(function(res: any) {
-        console.log(res);
         return res;
       })
       .catch(function(err: any) {
