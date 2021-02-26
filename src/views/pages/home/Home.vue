@@ -1,4 +1,7 @@
-// todo - Store "checked" items in a separate array, and display them AFTER the "unchecked" items.
+// eslint-disable-next-line prettier/prettier // eslint-disable-next-line prettier/prettier // todo -
+Store "checked" items in a separate array, and display them AFTER the "unchecked" items. // todo - when
+adding, removing, and checking items - need to individually update them on server instead of overwriting
+the array.
 
 <style lang="scss" scoped>
 .isChecked {
@@ -30,21 +33,18 @@
       <!-- start:: If currentUser -->
       <div v-if="currentUser">
         <div v-if="lists">
-          <h2 class="text-center mb-10">your lists</h2>
+          <h2 class="text-center mb-15">your lists</h2>
+          <div class="my-10">
+            <v-btn block color="info" @click="getAllUserLists">refresh lists</v-btn>
+          </div>
+
           <!-- start:: Add a new List -->
           <CreateList :userId="currentUser._id" :userLists="lists" />
           <!-- end:: Add a new List -->
 
           <!-- start:: User Lists -->
           <div>
-            <v-card
-              v-for="list in lists"
-              @is-confirmed="archiveList(list)"
-              :key="list.name"
-              class="my-7"
-              color="grey darken-4"
-              tile
-            >
+            <v-card v-for="list in lists" :key="list.name" class="my-7" color="grey darken-4" tile>
               <v-img
                 height="150"
                 :src="require(`@/assets/media/category-images/${list.category.image}`)"
@@ -138,16 +138,30 @@
                     <!-- end:: Items List -->
 
                     <div class="mt-10 mb-6 mx-3">
-                      <ConfirmationDialog
-                        :dialogButtonColor="'warning'"
-                        :dialogButtonText="'archive list'"
-                        :dialogButtonIsBlock="true"
-                        :dialogButtonIsTile="true"
-                        :headerTitle="'archive confirmation'"
-                        :confirmationMessage="'are you sure you want to archive this list?'"
-                        :acceptText="'yes'"
-                        :declineText="'no'"
-                      />
+                      <v-btn @click="archiveList(list)" color="error" block tile>archive list</v-btn>
+                      <!-- <v-row justify="center">
+                        <v-dialog v-model="dialog">
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-btn color="warning" block tile dark v-bind="attrs" v-on="on">
+                              archive list
+                            </v-btn>
+                          </template>
+                          <v-card>
+                            <v-card-title class="headline">archive confirmation</v-card-title>
+                            <v-card-text>are you sure you want to archive this list?</v-card-text>
+
+                            <v-card-actions>
+                              <v-spacer></v-spacer>
+                              <v-btn color="green darken-1" tile @click="archiveList(list)">
+                                yes
+                              </v-btn>
+                              <v-btn color="red darken-1" tile outlined @click="dialog = false">
+                                no
+                              </v-btn>
+                            </v-card-actions>
+                          </v-card>
+                        </v-dialog>
+                      </v-row> -->
                     </div>
                   </v-card-text>
                 </div>
@@ -340,14 +354,14 @@ const defaultLists: List[] | null = [
 ];
 
 export default Vue.extend({
-  components: { Spinner, CreateList, ConfirmationDialog },
+  components: { Spinner, CreateList },
   name: "Home",
 
   data: () => ({
     input: null,
     lists: defaultLists,
     isLoading: false,
-    isConfirmedArchive: false
+    dialog: false
   }),
 
   methods: {
@@ -427,6 +441,9 @@ export default Vue.extend({
     archiveList: function(list: List): void {
       const index: number = this.lists.indexOf(list);
       this.lists.splice(index, 1);
+
+      // todo - add the removed list to the User's archived_lists on server.
+      // const archivedList = this.lists.splice(index, 1);
 
       this.isLoading = true;
       Promise.resolve(HomeService.updateUsersLists(this.currentUser._id, this.lists)).then(data => {
@@ -558,6 +575,7 @@ export default Vue.extend({
   mounted() {
     this.getAllUserLists();
   },
+
   computed: {
     ...mapGetters(["currentUser"])
   }

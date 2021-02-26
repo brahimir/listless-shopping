@@ -15,12 +15,12 @@
 </style>
 
 <template>
-  <div class="mx-3 my-15">
+  <div class="mx-3 mb-15">
     <v-row justify="center">
       <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
         <template v-slot:activator="{ on }">
           <!-- start:: Create new List Button -->
-          <v-btn color="success" block tile v-on="on">create new list</v-btn>
+          <v-btn color="success" block outlined v-on="on">create new list</v-btn>
           <!-- end:: Create new List Button -->
         </template>
         <v-card>

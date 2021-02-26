@@ -183,6 +183,45 @@ exports.updateUserLists = function(req, res) {
     });
 };
 
+// Update all User's Archived Lists
+exports.updateUserLists = function(req, res) {
+  if (!req.body) {
+    return res.status(400).send({
+      message: "User lists to update can not be empty!"
+    });
+  }
+
+  const id = req.body._id;
+  const archivedLists = req.body.lists;
+
+  User.findByIdAndUpdate(
+    id,
+    { $set: { "profile.archived_lists": archivedLists } },
+    {
+      useFindAndModify: false
+    }
+  )
+    .then(data => {
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot update User's archivedLists with id=${id}. Maybe User was not found!`,
+          status: 404
+        });
+      } else
+        res.status(200).send({
+          message: "User's archivedLists was updated successfully.",
+          status: 200
+        });
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Error updating User's archivedLists with id=" + id,
+        error: err,
+        status: 500
+      });
+    });
+};
+
 // * EXTRAS
 exports.loginRequired = function(req, res, next) {
   if (req.user) {
