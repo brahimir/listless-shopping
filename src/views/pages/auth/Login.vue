@@ -116,6 +116,7 @@ export default Vue.extend({
       this.$v.$touch();
       if (this.$v.$anyError) return;
 
+      this.$store.dispatch("LOGOUT");
       this.errorLogin = false;
 
       const credentials = {
