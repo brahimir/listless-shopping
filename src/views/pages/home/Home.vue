@@ -31,14 +31,20 @@
       <div v-if="currentUser">
         <div v-if="lists">
           <h2 class="text-center mb-10">your lists</h2>
-
           <!-- start:: Add a new List -->
           <CreateList :userId="currentUser._id" :userLists="lists" />
           <!-- end:: Add a new List -->
 
           <!-- start:: User Lists -->
           <div>
-            <v-card v-for="list in lists" :key="list.name" class="my-7" color="grey darken-4" tile>
+            <v-card
+              v-for="list in lists"
+              @is-confirmed="archiveList(list)"
+              :key="list.name"
+              class="my-7"
+              color="grey darken-4"
+              tile
+            >
               <v-img
                 height="150"
                 :src="require(`@/assets/media/category-images/${list.category.image}`)"
@@ -131,8 +137,17 @@
                     </div>
                     <!-- end:: Items List -->
 
-                    <div class="mt-10">
-                      <v-btn color="warning" block tile @click="archiveList(list)">archive list</v-btn>
+                    <div class="mt-10 mb-6 mx-3">
+                      <ConfirmationDialog
+                        :dialogButtonColor="'warning'"
+                        :dialogButtonText="'archive list'"
+                        :dialogButtonIsBlock="true"
+                        :dialogButtonIsTile="true"
+                        :headerTitle="'archive confirmation'"
+                        :confirmationMessage="'are you sure you want to archive this list?'"
+                        :acceptText="'yes'"
+                        :declineText="'no'"
+                      />
                     </div>
                   </v-card-text>
                 </div>
@@ -290,6 +305,7 @@ import moment from "moment";
 // Components
 import Spinner from "@/components/content/Spinner.vue";
 import CreateList from "@/views/pages/home/_dialogs/CreateList.vue";
+import ConfirmationDialog from "@/components/content/_dialogs/ConfirmationDialog.vue";
 
 // Default list for non currentUser.
 const defaultLists: List[] | null = [
@@ -324,13 +340,14 @@ const defaultLists: List[] | null = [
 ];
 
 export default Vue.extend({
-  components: { Spinner, CreateList },
+  components: { Spinner, CreateList, ConfirmationDialog },
   name: "Home",
 
   data: () => ({
     input: null,
     lists: defaultLists,
-    isLoading: false
+    isLoading: false,
+    isConfirmedArchive: false
   }),
 
   methods: {

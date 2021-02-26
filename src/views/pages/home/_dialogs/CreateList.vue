@@ -143,8 +143,6 @@ export default Vue.extend({
         createdOn: new Date().toISOString()
       };
 
-      console.log(newList);
-
       const localUserLists = JSON.parse(JSON.stringify(this.userLists));
       localUserLists.unshift(newList);
 
@@ -161,9 +159,8 @@ export default Vue.extend({
           console.log("Add an error message here!");
         }
         this.isLoading = false;
+        this.dialog = false;
       });
-
-      this.dialog = false;
     },
 
     // todo - check the category of the created list for any previous lists of the same category
