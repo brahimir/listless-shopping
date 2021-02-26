@@ -53,9 +53,10 @@
               <v-select
                 v-model="category"
                 :items="categories"
-                item-text="name"
                 :error-messages="categoryErrors"
                 label="category"
+                item-text="name"
+                return-object
                 required
                 @change="$v.category.$touch()"
                 @blur="$v.category.$touch()"
@@ -96,6 +97,7 @@ import HomeService from "@/views/pages/home/Home.service";
 
 export default Vue.extend({
   mixins: [validationMixin],
+  props: ["userId", "userLists"],
   name: "CreateList",
   validations: {
     name: { required, maxLength: maxLength(20) },
@@ -103,10 +105,10 @@ export default Vue.extend({
   },
 
   data: () => ({
+    isLoading: false,
     dialog: false,
-    name: null,
-    email: null,
-    category: null,
+    name: "",
+    category: CATEGORIES[0],
     categories: CATEGORIES
   }),
 
@@ -133,7 +135,34 @@ export default Vue.extend({
       this.$v.$touch();
       if (this.$v.$anyError) return;
 
-      console.log("NICE");
+      const newList: List = {
+        category: this.category,
+        name: this.name,
+        items: [],
+        isActive: false,
+        createdOn: new Date().toISOString()
+      };
+
+      console.log(newList);
+
+      const localUserLists = JSON.parse(JSON.stringify(this.userLists));
+      localUserLists.unshift(newList);
+
+      this.isLoading = true;
+      Promise.resolve(HomeService.updateUsersLists(this.userId, localUserLists)).then(data => {
+        // todo - maybe emit an event for success or fail, and display a snackbar message on Home
+        // todo - accordingly.
+        if (!data) {
+          console.log("Add an error message here!");
+        }
+        if (data.status === 200) {
+          console.log("Add a success message here!");
+        } else {
+          console.log("Add an error message here!");
+        }
+        this.isLoading = false;
+      });
+
       this.dialog = false;
     },
 

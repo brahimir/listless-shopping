@@ -25,6 +25,7 @@ exports.register = function(req, res) {
 };
 
 // * AUTH
+// Login a User.
 exports.signIn = function(req, res) {
   User.findOne({ email: req.body.email }, function(err, user) {
     if (err) throw err;
@@ -63,6 +64,7 @@ exports.signIn = function(req, res) {
   });
 };
 
+// Logout a User.
 exports.logout = function(req, res) {
   User.findOne({ _id: req.body._id }, function(err, user) {
     if (err) throw err;
@@ -96,6 +98,7 @@ exports.logout = function(req, res) {
 };
 
 // * LISTS
+// Get all User's Lists.
 exports.getAllUserLists = function(req, res) {
   User.findOne({ _id: req.body._id }, function(err, user) {
     if (err) throw err;
@@ -114,6 +117,7 @@ exports.getAllUserLists = function(req, res) {
   });
 };
 
+// Get User's active Lists.
 exports.getActiveUserList = function(req, res) {
   User.findOne({ _id: req.body._id }, function(err, user) {
     if (err) throw err;
@@ -140,6 +144,7 @@ exports.getActiveUserList = function(req, res) {
   });
 };
 
+// Update all User's Lists.
 exports.updateUserLists = function(req, res) {
   if (!req.body) {
     return res.status(400).send({

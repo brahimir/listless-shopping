@@ -42,7 +42,7 @@
                 {{ list.name }}
               </v-card-title>
 
-              <v-card-subtitle>created on: {{ list.createdOn | moment }}</v-card-subtitle>
+              <v-card-subtitle>created on {{ list.createdOn | moment }}</v-card-subtitle>
 
               <v-card-actions>
                 <v-chip :color="list.category.chip.color">
@@ -127,7 +127,7 @@
                     <!-- end:: Items List -->
 
                     <div class="mt-10">
-                      <v-btn color="warning" block tile>archive list</v-btn>
+                      <v-btn color="warning" block tile @click="archiveList(list)">archive list</v-btn>
                     </div>
                   </v-card-text>
                 </div>
@@ -142,12 +142,12 @@
         </div>
 
         <!-- start:: Add a new List -->
-        <CreateList />
+        <CreateList :userId="currentUser._id" :userLists="lists" />
         <!-- end:: Add a new List -->
       </div>
       <!-- end:: If currentUser -->
 
-      <!-- start:: If NOT currentUser - sample list -->
+      <!-- start:: If NOT currentUser - render sample list -->
       <div v-if="!currentUser">
         <div v-if="lists">
           <h2 class="text-center mb-10">sample list</h2>
@@ -262,7 +262,7 @@
           <!-- end:: User Lists -->
         </div>
       </div>
-      <!-- end:: If NOT currentUser - sample list -->
+      <!-- end:: If NOT currentUser - render sample list -->
     </div>
 
     <!-- start:: Loading spinner -->
@@ -334,7 +334,6 @@ export default Vue.extend({
 
   methods: {
     // * User List functions
-
     /**
      * Adds User input to the specified list.
      *
@@ -401,6 +400,28 @@ export default Vue.extend({
     updateLists: function(): void {
       // Resolve the Promise from the HomeService request.
       Promise.resolve(HomeService.updateUsersLists(this.currentUser._id, this.lists)).then();
+    },
+
+    /**
+     * Archives a User's List on the server.
+     * todo - have a confirmation dialog first.
+     */
+    archiveList: function(list: List): void {
+      const index: number = this.lists.indexOf(list);
+      this.lists.splice(index, 1);
+
+      this.isLoading = true;
+      Promise.resolve(HomeService.updateUsersLists(this.currentUser._id, this.lists)).then(data => {
+        if (!data) {
+          console.log("Add an error message here!");
+        }
+        if (data.status === 200) {
+          console.log("Add a success message here!");
+        } else {
+          console.log("Add an error message here!");
+        }
+        this.isLoading = false;
+      });
     },
 
     /**
