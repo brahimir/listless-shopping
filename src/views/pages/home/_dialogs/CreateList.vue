@@ -15,14 +15,10 @@
 </style>
 
 <template>
-  <div class="mx-3 my-10">
+  <div class="mx-3 my-15">
     <v-row justify="center">
       <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
         <template v-slot:activator="{ on }">
-          <!-- <v-btn color="primary" dark v-bind="attrs" v-on="on">
-            Open Dialog
-          </v-btn> -->
-
           <!-- start:: Create new List Button -->
           <v-btn color="success" block tile v-on="on">create new list</v-btn>
           <!-- end:: Create new List Button -->
@@ -38,37 +34,47 @@
           </v-toolbar>
           <!-- start:: Toolbar -->
 
-          <!-- start:: Create List Form -->
-          <v-list three-line subheader>
-            <v-subheader>User Controls</v-subheader>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title>Content filtering</v-list-item-title>
-                <v-list-item-subtitle
-                  >Set the content filtering level to restrict apps that can be
-                  downloaded</v-list-item-subtitle
-                >
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title>Password</v-list-item-title>
-                <v-list-item-subtitle
-                  >Require password for purchase or use password to restrict
-                  purchase</v-list-item-subtitle
-                >
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-
+          <!-- start:: New List form -->
           <div class="mx-3 my-10">
-            <v-btn class="my-3" color="success" block @click="onSubmit">
-              create
-            </v-btn>
-            <v-btn class="my-3" color="error" block @click="dialog = false">
-              cancel
-            </v-btn>
+            <form>
+              <!-- start:: List name -->
+              <v-text-field
+                v-model="name"
+                :error-messages="nameErrors"
+                :counter="20"
+                label="list name"
+                required
+                @input="$v.name.$touch()"
+                @blur="$v.name.$touch()"
+              ></v-text-field>
+              <!-- end:: List name -->
+
+              <!-- start:: List category -->
+              <v-select
+                v-model="category"
+                :items="categories"
+                item-text="name"
+                :error-messages="categoryErrors"
+                label="category"
+                required
+                @change="$v.category.$touch()"
+                @blur="$v.category.$touch()"
+              ></v-select>
+              <!-- start:: List category -->
+
+              <!-- start:: Submit -->
+              <div class="my-5">
+                <v-btn class="my-3" color="success" block @click="onSubmit">
+                  create
+                </v-btn>
+                <v-btn class="my-3" color="error" block outlined @click="dialog = false">
+                  cancel
+                </v-btn>
+              </div>
+              <!-- end:: Submit -->
+            </form>
           </div>
+          <!-- end:: New List form -->
         </v-card>
       </v-dialog>
     </v-row>
@@ -78,25 +84,63 @@
 <script lang="ts">
 // Vue
 import Vue from "vue";
+// Vuelidate
+import { validationMixin } from "vuelidate";
+import { required, maxLength } from "vuelidate/lib/validators";
+// Constants
+import { CATEGORIES } from "@/.env/constants.categories";
 // Models
 import { List } from "@/views/pages/home/_models/list.model";
 // Services
 import HomeService from "@/views/pages/home/Home.service";
 
 export default Vue.extend({
+  mixins: [validationMixin],
   name: "CreateList",
+  validations: {
+    name: { required, maxLength: maxLength(20) },
+    category: { required }
+  },
 
   data: () => ({
     dialog: false,
-    notifications: false,
-    sound: true,
-    widgets: false
+    name: null,
+    email: null,
+    category: null,
+    categories: CATEGORIES
   }),
 
+  computed: {
+    categoryErrors: function(): void {
+      const errors: any = [];
+      if (!this.$v.category.$dirty) return errors;
+      !this.$v.category.required && errors.push("enter a list category");
+      return errors;
+    },
+    nameErrors: function(): void {
+      const errors: any = [];
+      if (!this.$v.name.$dirty) return errors;
+      !this.$v.name.maxLength && errors.push("list name must can only be 20 characters long");
+      !this.$v.name.required && errors.push("enter a list name");
+      return errors;
+    }
+  },
+
   methods: {
+    // todo
     onSubmit: function(): void {
+      // Check form for errors.
+      this.$v.$touch();
+      if (this.$v.$anyError) return;
+
       console.log("NICE");
       this.dialog = false;
+    },
+
+    // todo - check the category of the created list for any previous lists of the same category
+    // todo - that have any "unchecked" items, and ask user if they want to add those "unchecked" items to
+    // todo - this new list.
+    checkList: function(category: string): void {
       // todo
     }
   }
