@@ -31,6 +31,11 @@
       <div v-if="currentUser">
         <div v-if="lists">
           <h2 class="text-center mb-10">your lists</h2>
+
+          <!-- start:: Add a new List -->
+          <CreateList :userId="currentUser._id" :userLists="lists" />
+          <!-- end:: Add a new List -->
+
           <!-- start:: User Lists -->
           <div>
             <v-card v-for="list in lists" :key="list.name" class="my-7" color="grey darken-4" tile>
@@ -140,10 +145,6 @@
         <div v-if="!lists.length" class="font-italic text-muted text-center">
           it's empty in here...
         </div>
-
-        <!-- start:: Add a new List -->
-        <CreateList :userId="currentUser._id" :userLists="lists" />
-        <!-- end:: Add a new List -->
       </div>
       <!-- end:: If currentUser -->
 
