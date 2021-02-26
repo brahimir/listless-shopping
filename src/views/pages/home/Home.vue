@@ -14,11 +14,19 @@
   background-color: #161616;
   border: 1px solid #161616;
 }
+
+.spinner-container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
 </style>
 
 <template>
   <div>
-    <div v-if="!isLoading" class="content">
+    <div id="home" v-if="!isLoading">
       <!-- start:: If currentUser -->
       <div v-if="currentUser">
         <div v-if="lists">
@@ -127,6 +135,10 @@
             </v-card>
           </div>
           <!-- end:: User Lists -->
+        </div>
+
+        <div v-if="!lists.length" class="font-italic text-muted text-center">
+          it's empty in here...
         </div>
 
         <!-- start:: Add a new List -->
@@ -254,7 +266,9 @@
     </div>
 
     <!-- start:: Loading spinner -->
-    <Spinner v-if="isLoading" class="my-5" :size="70" :width="7" :isCentered="true" />
+    <div class="spinner-container">
+      <Spinner v-if="isLoading" :size="100" :width="7" :isCentered="true" />
+    </div>
     <!-- end:: Loading spinner -->
   </div>
 </template>
@@ -368,12 +382,14 @@ export default Vue.extend({
      */
     toggleItem: function(item: Item, list: List): void {
       // todo - shifts item successfully, but "checks" the next item in the list.
+      const index: number = list.items.indexOf(item);
+
       // if (item.checked) {
-      //   this.list.items.splice(index, 1);
-      //   this.list.items.push(item);
+      //   list.items.splice(index, 1);
+      //   list.items.push(item);
       // } else {
-      //   this.list.items.splice(index, 1);
-      //   this.list.items.unshift(item);
+      //   list.items.splice(index, 1);
+      //   list.items.unshift(item);
       // }
       // this.lists.splice(this.lists.indexOf(list), 1, list);
       this.updateLists();
@@ -406,6 +422,11 @@ export default Vue.extend({
       });
     },
 
+    // todo - get generated list from learning algorithm from server here.
+    generateList: function(): void {
+      // todo
+    },
+
     /**
      * Collapses other lists while a new list is opened.
      *
@@ -423,7 +444,7 @@ export default Vue.extend({
       this.updateLists();
     },
 
-    // * sample List functions
+    // * Sample List functions
 
     sampleAddItem: function(input: string, list: List): void {
       const newItem: Item = {

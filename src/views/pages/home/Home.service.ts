@@ -8,10 +8,6 @@ import { List } from "./_models/list.model";
 // Axios
 import axios from "axios";
 
-// OneList Routes
-const GET_ONE_LIST = API_ROUTES.ONE_LIST.GET_ONE_LIST;
-const UPDATE_ONE_LIST = API_ROUTES.ONE_LIST.UPDATE_ONE_LIST;
-
 // API Routes
 const GET_ALL_USER_LISTS = API_ROUTES.AUTH.USER.LISTS.GET_ALL_LISTS;
 const UPDATE_USER_ACTIVE_LIST = API_ROUTES.AUTH.USER.LISTS.UPDATE_ALL_LISTS;
