@@ -9,11 +9,17 @@ import vuetify from "./plugins/vuetify";
 // Axios
 import axios from "axios";
 import VueAxios from "vue-axios";
+// Bootstrap
+import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap-vue/dist/bootstrap-vue.css";
 
 Vue.config.productionTip = false;
 
 // Imports
 Vue.use(VueAxios, axios);
+Vue.use(BootstrapVue);
+Vue.use(IconsPlugin);
 
 new Vue({
   router,
