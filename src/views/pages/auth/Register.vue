@@ -139,8 +139,14 @@ export default Vue.extend({
           darkMode: true
         },
         profile: {
-          lists: []
+          lists: [],
+          archivedLists: []
         }
+      };
+
+      const credentials = {
+        email: user.email,
+        password: user.password
       };
 
       this.isLoading = true;
@@ -153,7 +159,19 @@ export default Vue.extend({
           this.isLoading = false;
           this.clearForm();
 
-          this.$router.push("/home");
+          this.isLoading = true;
+          Promise.resolve(AuthService.login(credentials)).then((user: User) => {
+            if (!user) {
+              this.isLoading = false;
+            } else {
+              this.isLoading = false;
+              this.clearForm();
+
+              // Update store and route to Home.
+              this.$store.dispatch("LOGIN", user);
+              this.$router.push("/home");
+            }
+          });
         }
       });
     },
