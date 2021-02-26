@@ -134,7 +134,6 @@ export default Vue.extend({
     ],
     userAccount: [{ title: "lists", icon: "mdi-format-list-checks", path: "/lists" }]
   }),
-  // todo - implement log out logic here
   methods: {
     logout: function(): void {
       Promise.resolve(AuthService.logout(this.currentUser._id)).then((isLoggedOut: boolean) => {
