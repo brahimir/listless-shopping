@@ -9,6 +9,7 @@ todo - add a confirm password field.
     <v-form @submit.stop.prevent="register" v-model="valid">
       <v-container>
         <v-row>
+          <!-- start:: Email -->
           <v-col cols="12">
             <v-text-field
               v-model="email"
@@ -19,7 +20,9 @@ todo - add a confirm password field.
               @blur="$v.email.$touch()"
             ></v-text-field>
           </v-col>
+          <!-- end:: Email -->
 
+          <!-- start:: Password -->
           <v-col cols="12">
             <v-text-field
               type="password"
@@ -31,7 +34,36 @@ todo - add a confirm password field.
               @blur="$v.password.$touch()"
             ></v-text-field>
           </v-col>
+          <!-- end:: Password -->
 
+          <!-- start:: Confirm Password -->
+          <v-col cols="12">
+            <v-text-field
+              type="password"
+              v-model="confirmPassword"
+              :error-messages="confirmPasswordErrors"
+              label="confirm password"
+              required
+              @input="$v.confirmPassword.$touch()"
+              @blur="$v.confirmPassword.$touch()"
+            ></v-text-field>
+          </v-col>
+          <!-- end:: Confirm Password -->
+
+          <!-- start:: Verify Credentials -->
+          <v-col>
+            <v-checkbox
+              v-model="checkbox"
+              :error-messages="checkboxErrors"
+              label="I have not entered any personal credentials during registration"
+              required
+              @change="$v.checkbox.$touch()"
+              @blur="$v.checkbox.$touch()"
+            ></v-checkbox>
+          </v-col>
+          <!-- start:: Verify Credentials -->
+
+          <!-- start:: Submit -->
           <v-col class="mt-5" cols="12">
             <v-btn
               type="submit"
@@ -47,6 +79,7 @@ todo - add a confirm password field.
               create account
             </v-btn>
           </v-col>
+          <!-- start:: Submit -->
         </v-row>
 
         <v-row class="mt-10">
@@ -111,15 +144,38 @@ export default Vue.extend({
     isLoading: false,
     errorRegister: false,
     successRegister: false,
-    message: "",
     valid: false,
+    email: "",
     password: "",
-    email: ""
+    confirmPassword: "",
+    checkbox: false
   }),
 
   validations: {
     email: { required, email },
-    password: { required, minLength: minLength(8) }
+    password: {
+      required,
+      minLength: minLength(8),
+      valid: function(value) {
+        const containsUppercase = /[A-Z]/.test(value);
+        const containsLowercase = /[a-z]/.test(value);
+        const containsNumber = /[0-9]/.test(value);
+        const containsSpecial = /[#?!@$%^&*-]/.test(value);
+        return containsUppercase && containsLowercase && containsNumber && containsSpecial;
+      }
+    },
+    confirmPassword: {
+      required,
+      valid: function(value) {
+        if (value === this.password) return true;
+        else return false;
+      }
+    },
+    checkbox: {
+      checked(val) {
+        return val;
+      }
+    }
   },
 
   methods: {
@@ -140,7 +196,8 @@ export default Vue.extend({
         },
         profile: {
           lists: [],
-          archivedLists: []
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          archived_lists: []
         }
       };
 
@@ -184,18 +241,33 @@ export default Vue.extend({
   },
 
   computed: {
-    passwordErrors() {
-      const errors: any[] = [];
-      if (!this.$v.$dirty) return errors;
-      !this.$v.password.minLength && errors.push("password must be at least 8 characters long");
-      !this.$v.password.required && errors.push("enter your password");
-      return errors;
-    },
     emailErrors() {
-      const errors: any[] = [];
+      const errors: string[] = [];
       if (!this.$v.email.$dirty) return errors;
       !this.$v.email.email && errors.push("enter a valid email");
       !this.$v.email.required && errors.push("enter your email");
+      return errors;
+    },
+    passwordErrors() {
+      const errors: string[] = [];
+      if (!this.$v.password.$dirty) return errors;
+      !this.$v.password.minLength && errors.push("password must be at least 8 characters long");
+      !this.$v.password.valid &&
+        errors.push("password must contain an uppercase letter, a number, and a special character");
+      !this.$v.password.required && errors.push("enter your password");
+      return errors;
+    },
+    confirmPasswordErrors() {
+      const errors: string[] = [];
+      if (!this.$v.confirmPassword.$dirty) return errors;
+      !this.$v.confirmPassword.valid && errors.push("passwords much match");
+      !this.$v.confirmPassword.required && errors.push("enter your password again");
+      return errors;
+    },
+    checkboxErrors() {
+      const errors: string[] = [];
+      if (!this.$v.checkbox.$dirty) return errors;
+      !this.$v.checkbox.checked && errors.push("you must agree to continue");
       return errors;
     }
   }

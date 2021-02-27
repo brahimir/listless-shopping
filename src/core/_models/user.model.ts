@@ -6,7 +6,7 @@ export interface User {
   };
   profile: {
     lists: Object[];
-    archivedLists: Object[];
+    archived_lists: Object[];
   };
   token?: string;
 }

@@ -65,7 +65,6 @@ const AuthService = {
     return axios
       .post(REGISTER_USER, user)
       .then((res: any) => {
-        console.log(res.data);
         return res.data;
       })
       .catch((err: any) => {
