@@ -117,6 +117,25 @@ exports.getAllUserLists = function(req, res) {
   });
 };
 
+// Get all User's ARCHIVED Lists.
+exports.getAllUserArchivedLists = function(req, res) {
+  User.findOne({ _id: req.body._id }, function(err, user) {
+    if (err) throw err;
+    if (!user) {
+      return res.status(401).json({
+        message: `Error. Could not locate User with ${req.body._id}`
+      });
+    }
+
+    const userArchivedLists = user.profile.archived_lists;
+    const response = {
+      archivedLists: userArchivedLists
+    };
+
+    return res.json(response);
+  });
+};
+
 // Get User's active Lists.
 exports.getActiveUserList = function(req, res) {
   User.findOne({ _id: req.body._id }, function(err, user) {
@@ -184,15 +203,15 @@ exports.updateUserLists = function(req, res) {
 };
 
 // Update all User's Archived Lists
-exports.updateUserLists = function(req, res) {
+exports.updateUserArchivedLists = function(req, res) {
   if (!req.body) {
     return res.status(400).send({
-      message: "User lists to update can not be empty!"
+      message: "User archivedLists to update can not be empty!"
     });
   }
 
   const id = req.body._id;
-  const archivedLists = req.body.lists;
+  const archivedLists = req.body.archivedLists;
 
   User.findByIdAndUpdate(
     id,
