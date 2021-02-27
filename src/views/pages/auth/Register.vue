@@ -1,5 +1,5 @@
-// todo - create a v-alert for accounts that already exist in the database instead of a gerneal error.
-
+// todo - create a v-alert for accounts that already exist in the database instead of a gerneal error. //
+todo - add a confirm password field.
 <style lang="scss" scoped></style>
 
 <template>

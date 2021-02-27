@@ -15,7 +15,7 @@
 </style>
 
 <template>
-  <div class="mx-3 mb-15">
+  <div class="mx-4 mb-10">
     <v-row justify="center">
       <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
         <template v-slot:activator="{ on }">
@@ -35,7 +35,7 @@
           <!-- start:: Toolbar -->
 
           <!-- start:: New List form -->
-          <div class="mx-3 my-10">
+          <div class="mx-10 my-10">
             <form>
               <!-- start:: List name -->
               <v-text-field
@@ -147,7 +147,7 @@ export default Vue.extend({
       localUserLists.unshift(newList);
 
       this.isLoading = true;
-      Promise.resolve(HomeService.updateUsersLists(this.userId, localUserLists)).then(data => {
+      Promise.resolve(HomeService.updateUserLists(this.userId, localUserLists)).then(data => {
         // todo - maybe emit an event for success or fail, and display a snackbar message on Home
         // todo - accordingly.
         if (!data) {

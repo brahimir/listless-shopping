@@ -34,9 +34,11 @@ the array.
       <div v-if="currentUser">
         <div v-if="lists">
           <h2 class="text-center mb-15">your lists</h2>
-          <div class="my-10">
-            <v-btn block color="info" @click="getAllUserLists">refresh lists</v-btn>
+          <!-- start:: Refresh -->
+          <div class="mt-10 mb-5">
+            <v-btn block color="info" @click="getAllLists">refresh lists</v-btn>
           </div>
+          <!-- end:: Refresh -->
 
           <!-- start:: Add a new List -->
           <CreateList :userId="currentUser._id" :userLists="lists" />
@@ -353,6 +355,8 @@ const defaultLists: List[] | null = [
   }
 ];
 
+const defaultArchivedLists: List[] = [];
+
 export default Vue.extend({
   components: { Spinner, CreateList },
   name: "Home",
@@ -360,6 +364,7 @@ export default Vue.extend({
   data: () => ({
     input: null,
     lists: defaultLists,
+    archivedLists: defaultArchivedLists,
     isLoading: false,
     dialog: false
   }),
@@ -431,7 +436,7 @@ export default Vue.extend({
      */
     updateLists: function(): void {
       // Resolve the Promise from the HomeService request.
-      Promise.resolve(HomeService.updateUsersLists(this.currentUser._id, this.lists)).then();
+      Promise.resolve(HomeService.updateUserLists(this.currentUser._id, this.lists)).then();
     },
 
     /**
@@ -440,13 +445,16 @@ export default Vue.extend({
      */
     archiveList: function(list: List): void {
       const index: number = this.lists.indexOf(list);
-      this.lists.splice(index, 1);
 
       // todo - add the removed list to the User's archived_lists on server.
-      // const archivedList = this.lists.splice(index, 1);
+      const archivedList = this.lists.splice(index, 1)[0];
+      console.log(archivedList);
+      this.archivedLists.unshift(archivedList);
 
       this.isLoading = true;
-      Promise.resolve(HomeService.updateUsersLists(this.currentUser._id, this.lists)).then(data => {
+      Promise.resolve(
+        HomeService.updateUserArchivedLists(this.currentUser._id, this.archivedLists)
+      ).then(data => {
         if (!data) {
           console.log("Add an error message here!");
         }
@@ -455,14 +463,15 @@ export default Vue.extend({
         } else {
           console.log("Add an error message here!");
         }
+        this.updateLists();
         this.isLoading = false;
       });
     },
 
     /**
-     * Retreives the User's list from the server.
+     * Retreives the User's lists from the server.
      */
-    getAllUserLists: function(): void {
+    getAllLists: function(): void {
       this.isLoading = true;
 
       // If there is no currentUser, fetch the sampleList from localstorage.
@@ -474,6 +483,12 @@ export default Vue.extend({
       // Resolve the Promise from the HomeService request.
       Promise.resolve(HomeService.getAllUserLists(this.currentUser._id)).then((data: List[]) => {
         this.lists = data;
+        this.isLoading = false;
+      });
+
+      // Resolve the Promise from the HomeService request.
+      Promise.resolve(HomeService.getAllUserArchivedLists(this.currentUser._id)).then((data: List[]) => {
+        this.archivedLists = data;
         this.isLoading = false;
       });
     },
@@ -573,7 +588,7 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.getAllUserLists();
+    this.getAllLists();
   },
 
   computed: {
