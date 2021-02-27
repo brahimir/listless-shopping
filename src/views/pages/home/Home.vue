@@ -41,7 +41,7 @@ the array.
           <!-- end:: Refresh -->
 
           <!-- start:: Add a new List -->
-          <CreateList :userId="currentUser._id" :userLists="lists" />
+          <CreateList :userId="currentUser._id" :userLists="lists" @list-added="getAllLists" />
           <!-- end:: Add a new List -->
 
           <!-- start:: User Lists -->
@@ -370,6 +370,9 @@ export default Vue.extend({
   }),
 
   methods: {
+    sampleMethod: function(value: number): void {
+      console.log(value);
+    },
     // * User List functions
     /**
      * Adds User input to the specified list.
@@ -445,13 +448,18 @@ export default Vue.extend({
      */
     archiveList: function(list: List): void {
       const index: number = this.lists.indexOf(list);
-
-      // todo - add the removed list to the User's archived_lists on server.
       const archivedList = this.lists.splice(index, 1)[0];
-      console.log(archivedList);
+
+      // Check if the archived list of items is empty; we don't want to archive an empty list.
+      this.isLoading = true;
+      if (!archivedList.items.length) {
+        this.updateLists();
+        this.isLoading = false;
+        return;
+      }
+
       this.archivedLists.unshift(archivedList);
 
-      this.isLoading = true;
       Promise.resolve(
         HomeService.updateUserArchivedLists(this.currentUser._id, this.archivedLists)
       ).then(data => {
@@ -480,13 +488,14 @@ export default Vue.extend({
         this.isLoading = false;
         return;
       }
-      // Resolve the Promise from the HomeService request.
+
+      // Get all User's Lists.
       Promise.resolve(HomeService.getAllUserLists(this.currentUser._id)).then((data: List[]) => {
         this.lists = data;
         this.isLoading = false;
       });
 
-      // Resolve the Promise from the HomeService request.
+      // Get all User's ARCHIVED Lists.
       Promise.resolve(HomeService.getAllUserArchivedLists(this.currentUser._id)).then((data: List[]) => {
         this.archivedLists = data;
         this.isLoading = false;

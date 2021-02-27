@@ -15,7 +15,7 @@
 </style>
 
 <template>
-  <div class="mx-4 mb-10">
+  <div class="mx-3 mb-10">
     <v-row justify="center">
       <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
         <template v-slot:activator="{ on }">
@@ -158,6 +158,7 @@ export default Vue.extend({
         } else {
           console.log("Add an error message here!");
         }
+        this.$emit("list-added");
         this.isLoading = false;
         this.dialog = false;
       });

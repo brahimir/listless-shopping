@@ -75,8 +75,6 @@ const HomeService = {
       archivedLists: archivedLists
     };
 
-    console.log(body);
-
     return axios
       .put(UPDATE_USER_ARCHIVED_LISTS, body)
       .then(function(res: any) {
