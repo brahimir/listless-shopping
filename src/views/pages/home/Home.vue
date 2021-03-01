@@ -139,32 +139,21 @@ the array.
                     </div>
                     <!-- end:: Items List -->
 
-                    <div class="mt-10 mb-6 mx-3">
-                      <v-btn @click="archiveList(list)" color="error" block tile>archive list</v-btn>
-                      <!-- <v-row justify="center">
-                        <v-dialog v-model="dialog">
-                          <template v-slot:activator="{ on, attrs }">
-                            <v-btn color="warning" block tile dark v-bind="attrs" v-on="on">
-                              archive list
-                            </v-btn>
-                          </template>
-                          <v-card>
-                            <v-card-title class="headline">archive confirmation</v-card-title>
-                            <v-card-text>are you sure you want to archive this list?</v-card-text>
-
-                            <v-card-actions>
-                              <v-spacer></v-spacer>
-                              <v-btn color="green darken-1" tile @click="archiveList(list)">
-                                yes
-                              </v-btn>
-                              <v-btn color="red darken-1" tile outlined @click="dialog = false">
-                                no
-                              </v-btn>
-                            </v-card-actions>
-                          </v-card>
-                        </v-dialog>
-                      </v-row> -->
+                    <!-- start:: Archive List (with confirmation) -->
+                    <div class="mt-15 mb-6 mx-4">
+                      <ConfirmationDialog
+                        :dialogButtonText="'archive list'"
+                        :dialogButtonColor="'red'"
+                        :dialogButtonIsBlock="true"
+                        :dialogButtonIsTile="true"
+                        :headerTitle="'confirmation'"
+                        :confirmationMessage="'are you sure you want to archive this list?'"
+                        :acceptText="'yes'"
+                        :declineText="'no'"
+                        @is-confirmed="archiveList(list)"
+                      />
                     </div>
+                    <!-- end:: Archive List (with confirmation) -->
                   </v-card-text>
                 </div>
               </v-expand-transition>
@@ -358,7 +347,7 @@ const defaultLists: List[] | null = [
 const defaultArchivedLists: List[] = [];
 
 export default Vue.extend({
-  components: { Spinner, CreateList },
+  components: { Spinner, CreateList, ConfirmationDialog },
   name: "Home",
 
   data: () => ({
@@ -439,7 +428,9 @@ export default Vue.extend({
      */
     updateLists: function(): void {
       // Resolve the Promise from the HomeService request.
-      Promise.resolve(HomeService.updateUserLists(this.currentUser._id, this.lists)).then();
+      Promise.resolve(HomeService.updateUserLists(this.currentUser._id, this.lists)).then(() => {
+        // todo - set all the User's lists "isActive" to false to collapse them for easier viewing
+      });
     },
 
     /**

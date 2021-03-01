@@ -2,7 +2,7 @@
 
 <template>
   <v-row justify="center">
-    <v-dialog v-model="dialog">
+    <v-dialog v-model="dialog" dark>
       <template v-slot:activator="{ on, attrs }">
         <v-btn
           :color="dialogButtonColor"
@@ -55,7 +55,6 @@ export default Vue.extend({
 
   methods: {
     onSubmit: function(): void {
-      console.log("Confirmed.");
       this.$emit("is-confirmed", true);
       this.dialog = false;
     }

@@ -25,8 +25,8 @@
         </template>
         <v-card>
           <!-- start:: Toolbar -->
-          <v-toolbar dark color="secondary">
-            <v-toolbar-title>create new list</v-toolbar-title>
+          <v-toolbar dark color="green darken-4">
+            <v-toolbar-title>new list</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn icon dark @click="dialog = false">
               <v-icon>mdi-close</v-icon>
