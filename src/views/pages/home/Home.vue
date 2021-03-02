@@ -451,6 +451,7 @@ export default Vue.extend({
 
       this.archivedLists.unshift(archivedList);
 
+      // Add list to archived lists on server.
       Promise.resolve(
         HomeService.updateUserArchivedLists(this.currentUser._id, this.archivedLists)
       ).then(data => {

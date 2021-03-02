@@ -113,14 +113,14 @@ export default Vue.extend({
   }),
 
   computed: {
-    categoryErrors: function(): void {
-      const errors: any = [];
+    categoryErrors: function(): string[] {
+      const errors: string[] = [];
       if (!this.$v.category.$dirty) return errors;
       !this.$v.category.required && errors.push("enter a list category");
       return errors;
     },
-    nameErrors: function(): void {
-      const errors: any = [];
+    nameErrors: function(): string[] {
+      const errors: string[] = [];
       if (!this.$v.name.$dirty) return errors;
       !this.$v.name.maxLength && errors.push("list name must can only be 20 characters long");
       !this.$v.name.required && errors.push("enter a list name");
