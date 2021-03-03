@@ -9,11 +9,12 @@ import { List } from "./_models/list.model";
 import axios from "axios";
 
 // API Routes
-const GET_ALL_USER_LISTS = API_ROUTES.AUTH.USER.LISTS.GET_ALL_LISTS;
-const GET_ALL_USER_ARCHIVED_LISTS = API_ROUTES.AUTH.USER.LISTS.GET_ALL_ARCHIVED_LISTS;
+const GET_ALL_USER_LISTS = API_ROUTES.AUTH.USER.LISTS.GET.ALL_LISTS;
+const GET_ALL_USER_ARCHIVED_LISTS = API_ROUTES.AUTH.USER.LISTS.GET.ALL_ARCHIVED_LISTS;
+const GET_USER_ARCHIVED_LISTS_BY_CATEGORY = API_ROUTES.AUTH.USER.LISTS.GET.ARCHIVED_LISTS_BY_CATEGORY;
 
-const UPDATE_USER_LISTS = API_ROUTES.AUTH.USER.LISTS.UPDATE_ALL_LISTS;
-const UPDATE_USER_ARCHIVED_LISTS = API_ROUTES.AUTH.USER.LISTS.UPDATE_ALL_ARCHIVED_LISTS;
+const UPDATE_ALL_USER_LISTS = API_ROUTES.AUTH.USER.LISTS.UPDATE.ALL_LISTS;
+const UPDATE_ALL_USER_ARCHIVED_LISTS = API_ROUTES.AUTH.USER.LISTS.UPDATE.ALL_ARCHIVED_LISTS;
 
 const HomeService = {
   init() {
@@ -65,6 +66,30 @@ const HomeService = {
   },
 
   /**
+   * Gets the User's ARCHIVED Lists by Category Index.
+   *
+   * @param {string} userId The User's ID.
+   * @param {string} categoryIndex The Category Index.
+   * @returns {Promise<any>} Promise with results from the server.
+   */
+  getUserArchivedListsByCategory(userId: string, categoryIndex: string): Promise<any> {
+    const body = {
+      _id: userId,
+      categoryIndex: categoryIndex
+    };
+
+    return axios
+      .post(GET_USER_ARCHIVED_LISTS_BY_CATEGORY, body)
+      .then(function(res: any) {
+        return res.data.archivedListsByCategoryIndex;
+      })
+      .catch(function(err: any) {
+        // todo
+        console.log(err);
+      });
+  },
+
+  /**
    * Updates the User's Lists on the server.
    *
    * @param {string} userId The User's ID.
@@ -78,7 +103,7 @@ const HomeService = {
     };
 
     return axios
-      .put(UPDATE_USER_LISTS, body)
+      .put(UPDATE_ALL_USER_LISTS, body)
       .then(function(res: any) {
         return res;
       })
@@ -102,7 +127,7 @@ const HomeService = {
     };
 
     return axios
-      .put(UPDATE_USER_ARCHIVED_LISTS, body)
+      .put(UPDATE_ALL_USER_ARCHIVED_LISTS, body)
       .then(function(res: any) {
         return res;
       })
