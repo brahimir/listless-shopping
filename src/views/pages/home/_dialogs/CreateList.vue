@@ -58,6 +58,7 @@
                 item-text="name"
                 return-object
                 required
+                @input="checkList(category.index)"
                 @change="$v.category.$touch()"
                 @blur="$v.category.$touch()"
               ></v-select>
@@ -109,7 +110,8 @@ export default Vue.extend({
     dialog: false,
     name: "",
     category: CATEGORIES[0],
-    categories: CATEGORIES
+    categories: CATEGORIES,
+    previousList: []
   }),
 
   computed: {
@@ -129,7 +131,6 @@ export default Vue.extend({
   },
 
   methods: {
-    // todo
     onSubmit: function(): void {
       // Check form for errors.
       this.$v.$touch();
@@ -164,11 +165,13 @@ export default Vue.extend({
       });
     },
 
-    // todo - check the category of the created list for any previous lists of the same category
-    // todo - that have any "unchecked" items, and ask user if they want to add those "unchecked" items to
-    // todo - this new list.
-    checkList: function(category: string): void {
-      // todo
+    // todo - check lists within a certain time range - we don't want to suggest list items from ~6 months ago.
+    checkList: function(categoryIndex: string): void {
+      Promise.resolve(HomeService.getUserArchivedListsByCategory(this.userId, categoryIndex)).then(
+        (data: any) => {
+          console.log(data);
+        }
+      );
     }
   }
 });
