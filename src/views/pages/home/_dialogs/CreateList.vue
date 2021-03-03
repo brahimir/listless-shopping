@@ -169,7 +169,10 @@ export default Vue.extend({
     checkList: function(categoryIndex: string): void {
       Promise.resolve(HomeService.getUserArchivedListsByCategory(this.userId, categoryIndex)).then(
         (data: any) => {
-          console.log(data);
+          if (!data) console.log("Add an error message here!");
+          else {
+            console.log(data);
+          }
         }
       );
     }
