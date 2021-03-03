@@ -166,6 +166,9 @@ export default Vue.extend({
     },
 
     // todo - check lists within a certain time range - we don't want to suggest list items from ~6 months ago.
+
+    // todo - maybe refactor List displays into a Component on Home, so we can display the previous List
+    // todo - here as well with the same interface.
     checkList: function(categoryIndex: string): void {
       Promise.resolve(HomeService.getUserArchivedListsByCategory(this.userId, categoryIndex)).then(
         (data: any) => {
