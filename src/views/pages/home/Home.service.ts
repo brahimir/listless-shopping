@@ -20,7 +20,13 @@ const HomeService = {
     Vue.use(VueAxios, axios);
   },
 
-  getAllUserLists(userId: string) {
+  /**
+   * Gets all User's Lists.
+   *
+   * @param {string} userId The User's ID.
+   * @returns {Promise<any>} Promise with results from the server.
+   */
+  getAllUserLists(userId: string): Promise<any> {
     const body = {
       _id: userId
     };
@@ -36,7 +42,13 @@ const HomeService = {
       });
   },
 
-  getAllUserArchivedLists(userId: string) {
+  /**
+   * Gets all User's ARCHIVED Lists.
+   *
+   * @param {string} userId The User's ID.
+   * @returns {Promise<any>} Promise with results from the server.
+   */
+  getAllUserArchivedLists(userId: string): Promise<any> {
     const body = {
       _id: userId
     };
@@ -52,7 +64,14 @@ const HomeService = {
       });
   },
 
-  updateUserLists(userId: string, lists: List[]) {
+  /**
+   * Updates the User's Lists on the server.
+   *
+   * @param {string} userId The User's ID.
+   * @param {List[]} lists The User's List to update to the server.
+   * @returns {Promise<any>} Promise with results from the server.
+   */
+  updateUserLists(userId: string, lists: List[]): Promise<any> {
     const body: any = {
       _id: userId,
       lists: lists
@@ -69,7 +88,14 @@ const HomeService = {
       });
   },
 
-  updateUserArchivedLists(userId: string, archivedLists: List[]) {
+  /**
+   * Updates the User's ARCHIVED Lists on the server.
+   *
+   * @param {string} userId The User's ID.
+   * @param {List[]} archivedLists The User's ARCHIVED Lists to update to the server.
+   * @returns {Promise<any>} Promise with results from the server.
+   */
+  updateUserArchivedLists(userId: string, archivedLists: List[]): Promise<any> {
     const body: any = {
       _id: userId,
       archivedLists: archivedLists
