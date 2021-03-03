@@ -151,15 +151,10 @@ export default Vue.extend({
       Promise.resolve(HomeService.updateUserLists(this.userId, localUserLists)).then(data => {
         // todo - maybe emit an event for success or fail, and display a snackbar message on Home
         // todo - accordingly.
-        if (!data) {
-          console.log("Add an error message here!");
+        if (!data) console.log("Add an error message here!");
+        else {
+          this.$emit("list-added");
         }
-        if (data.status === 200) {
-          console.log("Add a success message here!");
-        } else {
-          console.log("Add an error message here!");
-        }
-        this.$emit("list-added");
         this.isLoading = false;
         this.dialog = false;
       });
