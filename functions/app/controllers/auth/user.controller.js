@@ -98,9 +98,12 @@ exports.logout = function(req, res) {
 };
 
 // * LISTS
+// ? GETs
 // Get all User's Lists.
 exports.getAllUserLists = function(req, res) {
-  User.findOne({ _id: req.body._id }, function(err, user) {
+  const userId = req.body._id;
+
+  User.findOne({ _id: userId }, function(err, user) {
     if (err) throw err;
     if (!user) {
       return res.status(401).json({
@@ -109,7 +112,10 @@ exports.getAllUserLists = function(req, res) {
     }
 
     const userLists = user.profile.lists;
+    const count = userLists.length;
+
     const response = {
+      count: count,
       lists: userLists
     };
 
@@ -119,7 +125,9 @@ exports.getAllUserLists = function(req, res) {
 
 // Get all User's ARCHIVED Lists.
 exports.getAllUserArchivedLists = function(req, res) {
-  User.findOne({ _id: req.body._id }, function(err, user) {
+  const userId = req.body._id;
+
+  User.findOne({ _id: userId }, function(err, user) {
     if (err) throw err;
     if (!user) {
       return res.status(401).json({
@@ -128,7 +136,11 @@ exports.getAllUserArchivedLists = function(req, res) {
     }
 
     const userArchivedLists = user.profile.archived_lists;
+    const count = userArchivedLists.length;
+
+    // Prepare response.
     const response = {
+      count: count,
       archivedLists: userArchivedLists
     };
 
@@ -136,33 +148,39 @@ exports.getAllUserArchivedLists = function(req, res) {
   });
 };
 
-// Get User's active Lists.
-exports.getActiveUserList = function(req, res) {
-  User.findOne({ _id: req.body._id }, function(err, user) {
+// Get User's ARCHIVED Lists by request Category Index.
+exports.getUserArchivedListsByCategory = function(req, res) {
+  const userId = req.body._id;
+  const categoryIndex = req.body.categoryIndex;
+
+  User.findOne({ _id: userId }, function(err, user) {
     if (err) throw err;
     if (!user) {
       return res.status(401).json({
-        message: `Error. Could not locate User with ${req.body._id}`
+        message: `Error. Could not locate User with id ${req.body._id}`
       });
     }
 
-    const userLists = user.profile.lists;
-
-    let activeList;
-    userLists.forEach(element => {
-      if (element.isActive) {
-        activeList = element;
+    const archivedListsByCategoryIndex = [];
+    user.profile.archived_lists.forEach(element => {
+      if (element.category.index === categoryIndex) {
+        archivedListsByCategoryIndex.unshift(element);
       }
     });
 
+    const count = archivedListsByCategoryIndex.length;
+
+    // Prepare response.
     const response = {
-      activeList: activeList
+      count: count,
+      archivedListsByCategoryIndex: archivedListsByCategoryIndex
     };
 
     return res.json(response);
   });
 };
 
+// ? UPDATEs
 // Update all User's Lists.
 exports.updateUserLists = function(req, res) {
   if (!req.body) {
@@ -202,7 +220,7 @@ exports.updateUserLists = function(req, res) {
     });
 };
 
-// Update all User's Archived Lists
+// Update all User's ARCHIVED Lists
 exports.updateUserArchivedLists = function(req, res) {
   if (!req.body) {
     return res.status(400).send({

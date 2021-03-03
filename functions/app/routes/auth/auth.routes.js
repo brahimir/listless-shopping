@@ -13,15 +13,19 @@ module.exports = function(app) {
   app.route("/auth/from_token").post(userHandlers.user);
 
   // * LIST Routes
+  // ? GETs
   // Get all User's Lists
   app.route("/auth/user/lists/get").post(userHandlers.getAllUserLists);
 
   // Get all User's ARCHIVED Lists
   app.route("/auth/user/lists/archived/get").post(userHandlers.getAllUserArchivedLists);
 
-  // Get User's Active Lists
-  app.route("/auth/user/lists/get/active").post(userHandlers.getActiveUserList);
+  // Get User's ARCHIVED Lists by request Category
+  app
+    .route("/auth/user/lists/archived/by_category/get")
+    .post(userHandlers.getUserArchivedListsByCategory);
 
+  // ? UPDATEs
   // Update All User's Lists
   app.route("/auth/user/lists/update").put(userHandlers.updateUserLists);
 
