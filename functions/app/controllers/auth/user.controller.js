@@ -116,7 +116,8 @@ exports.getAllUserLists = function(req, res) {
 
     const response = {
       count: count,
-      lists: userLists
+      lists: userLists,
+      status: 200
     };
 
     return res.json(response);
@@ -141,7 +142,8 @@ exports.getAllUserArchivedLists = function(req, res) {
     // Prepare response.
     const response = {
       count: count,
-      archivedLists: userArchivedLists
+      archivedLists: userArchivedLists,
+      status: 200
     };
 
     return res.json(response);
@@ -173,7 +175,8 @@ exports.getUserArchivedListsByCategory = function(req, res) {
     // Prepare response.
     const response = {
       count: count,
-      archivedListsByCategoryIndex: archivedListsByCategoryIndex
+      archivedListsByCategoryIndex: archivedListsByCategoryIndex,
+      status: 200
     };
 
     return res.json(response);
