@@ -1,7 +1,6 @@
-// eslint-disable-next-line prettier/prettier // eslint-disable-next-line prettier/prettier // todo -
-Store "checked" items in a separate array, and display them AFTER the "unchecked" items. // todo - when
-adding, removing, and checking items - need to individually update them on server instead of overwriting
-the array.
+// todo - Store "checked" items in a separate array, and display them AFTER the "unchecked" items. //
+todo - when adding, removing, and checking items - need to individually update them on server instead of
+overwriting the array.
 
 <style lang="scss" scoped>
 .isChecked {
@@ -142,10 +141,11 @@ the array.
                     <!-- start:: Archive List (with confirmation) -->
                     <div class="mt-15 mb-6 mx-4">
                       <ConfirmationDialog
+                        :width="500"
                         :dialogButtonText="'archive list'"
                         :dialogButtonColor="'red'"
                         :dialogButtonIsBlock="true"
-                        :dialogButtonIsTile="true"
+                        :dialogButtonIsTile="false"
                         :headerTitle="'confirmation'"
                         :confirmationMessage="'are you sure you want to archive this list?'"
                         :acceptText="'yes'"
@@ -162,7 +162,7 @@ the array.
           <!-- end:: User Lists -->
         </div>
 
-        <div v-if="!lists.length" class="font-italic text-muted text-center">
+        <div v-if="!lists.length" class="my-15 font-italic text-muted text-center">
           it's empty in here...
         </div>
       </div>

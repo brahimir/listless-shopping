@@ -2,7 +2,7 @@
 
 <template>
   <v-row justify="center">
-    <v-dialog v-model="dialog" dark>
+    <v-dialog v-model="dialog" dark :width="width">
       <template v-slot:activator="{ on, attrs }">
         <v-btn
           :color="dialogButtonColor"
@@ -21,10 +21,10 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="green darken-1" tile @click="onSubmit">
+          <v-btn color="green darken-1" @click="onSubmit">
             {{ acceptText }}
           </v-btn>
-          <v-btn color="red darken-1" tile outlined @click="dialog = false">
+          <v-btn color="red darken-1" outlined @click="dialog = false">
             {{ declineText }}
           </v-btn>
         </v-card-actions>
@@ -39,6 +39,7 @@ import Vue from "vue";
 export default Vue.extend({
   name: "ConfirmationDialog",
   props: [
+    "width",
     "dialogButtonText",
     "dialogButtonColor",
     "dialogButtonIsBlock",
