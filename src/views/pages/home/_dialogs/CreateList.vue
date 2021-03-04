@@ -79,10 +79,6 @@
             </form>
           </div>
           <!-- end:: New List form -->
-
-          <div v-if="previousList">
-            {{ previousList }}
-          </div>
         </v-card>
       </v-dialog>
     </v-row>
@@ -102,6 +98,22 @@ import { List } from "@/views/pages/home/_models/list.model";
 // Services
 import HomeService from "@/views/pages/home/Home.service";
 
+const defaultList: List = {
+  category: {
+    index: "food",
+    name: "food",
+    image: "food.jpg",
+    chip: {
+      icon: "mdi-food-apple",
+      color: "green"
+    }
+  },
+  name: "default list",
+  items: [],
+  isActive: true,
+  createdOn: new Date().toISOString()
+};
+
 export default Vue.extend({
   mixins: [validationMixin],
   props: ["userId", "userLists"],
@@ -117,7 +129,7 @@ export default Vue.extend({
     name: "",
     category: CATEGORIES[0],
     categories: CATEGORIES,
-    previousList: []
+    previousList: defaultList
   }),
 
   computed: {
@@ -174,8 +186,8 @@ export default Vue.extend({
         (data: any) => {
           if (!data) console.log("Add an error message here!");
           else {
-            console.log(data[0]);
-            this.previousList = data[0].items;
+            this.previousList = data[0];
+            console.log(this.previousList);
           }
         }
       );

@@ -484,6 +484,11 @@ export default Vue.extend({
       // Get all User's Lists.
       Promise.resolve(HomeService.getAllUserLists(this.currentUser._id)).then((data: List[]) => {
         this.lists = data;
+
+        // Set isActive to false for each List; easier to view all Lists when they're collapsed.
+        this.lists.forEach(element => {
+          element.isActive = false;
+        });
         this.isLoading = false;
       });
 
