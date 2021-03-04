@@ -1,5 +1,4 @@
-// todo - create a v-alert for accounts that already exist in the database instead of a gerneal error. //
-todo - add a confirm password field.
+// todo - create a v-alert for accounts that already exist in the database instead of a gerneal error.
 <style lang="scss" scoped></style>
 
 <template>
@@ -158,10 +157,9 @@ export default Vue.extend({
       minLength: minLength(8),
       valid: function(value) {
         const containsUppercase = /[A-Z]/.test(value);
-        const containsLowercase = /[a-z]/.test(value);
         const containsNumber = /[0-9]/.test(value);
         const containsSpecial = /[#?!@$%^&*-]/.test(value);
-        return containsUppercase && containsLowercase && containsNumber && containsSpecial;
+        return containsUppercase && containsNumber && containsSpecial;
       }
     },
     confirmPassword: {
@@ -179,7 +177,6 @@ export default Vue.extend({
   },
 
   methods: {
-    // todo - login the user if successfully registered, instead of routing them to login page.
     register: function(): void {
       // Check form for errors.
       this.$v.$touch();
@@ -251,9 +248,9 @@ export default Vue.extend({
     passwordErrors() {
       const errors: string[] = [];
       if (!this.$v.password.$dirty) return errors;
-      !this.$v.password.minLength && errors.push("password must be at least 8 characters long");
       !this.$v.password.valid &&
         errors.push("password must contain an uppercase letter, a number, and a special character");
+      !this.$v.password.minLength && errors.push("password must be at least 8 characters long");
       !this.$v.password.required && errors.push("enter your password");
       return errors;
     },
