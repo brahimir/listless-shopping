@@ -25,8 +25,10 @@
         </template>
         <v-card>
           <!-- start:: Toolbar -->
-          <v-toolbar dark color="green darken-4">
-            <v-toolbar-title>new list</v-toolbar-title>
+          <v-toolbar dark color="green darken-2">
+            <v-toolbar-title>
+              <h4 class="mt-2">create new list</h4>
+            </v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn icon dark @click="dialog = false">
               <v-icon>mdi-close</v-icon>
@@ -35,7 +37,7 @@
           <!-- start:: Toolbar -->
 
           <!-- start:: New List form -->
-          <div class="mx-10 my-10">
+          <div class="container my-10">
             <form>
               <!-- start:: List name -->
               <v-text-field
@@ -65,7 +67,7 @@
               <!-- start:: List category -->
 
               <!-- start:: Submit -->
-              <div class="my-5">
+              <div class="my-10">
                 <v-btn class="my-3" color="success" block @click="onSubmit">
                   create
                 </v-btn>
@@ -162,8 +164,7 @@ export default Vue.extend({
 
     // todo - check lists within a certain time range - we don't want to suggest list items from ~6 months ago.
 
-    // todo - maybe refactor List displays into a Component on Home, so we can display the previous List
-    // todo - here as well with the same interface.
+    // todo - maybe refactor List displays into a Component on Home, so we can display the previous List here as well with the same interface.
     checkList: function(categoryIndex: string): void {
       Promise.resolve(HomeService.getUserArchivedListsByCategory(this.userId, categoryIndex)).then(
         (data: any) => {
