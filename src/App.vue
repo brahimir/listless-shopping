@@ -10,7 +10,7 @@
 
     <!-- start:: Content -->
     <v-main>
-      <div class="container my-10">
+      <div class="container my-15">
         <router-view :currentUser="currentUser" />
       </div>
     </v-main>
@@ -25,6 +25,7 @@
 <script lang="ts">
 // Vue
 import Vue from "vue";
+// Vuex
 import { mapGetters } from "vuex";
 // Components
 import AppBar from "@/components/layout/AppBar.vue";
