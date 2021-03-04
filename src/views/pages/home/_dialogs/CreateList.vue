@@ -79,6 +79,10 @@
             </form>
           </div>
           <!-- end:: New List form -->
+
+          <div v-if="previousList">
+            {{ previousList }}
+          </div>
         </v-card>
       </v-dialog>
     </v-row>
@@ -170,7 +174,8 @@ export default Vue.extend({
         (data: any) => {
           if (!data) console.log("Add an error message here!");
           else {
-            console.log(data);
+            console.log(data[0]);
+            this.previousList = data[0].items;
           }
         }
       );
