@@ -52,6 +52,24 @@
               ></v-select>
               <!-- start:: List category -->
 
+              <!-- start:: Check Previous List for unchecked Items -->
+              <div v-if="previousList" class="mt-5">
+                <h5>
+                  we found a previous
+                  <span class="mx-1">
+                    <v-chip :color="previousList.category.chip.color">
+                      <v-icon class="mr-1" small color="white">
+                        {{ previousList.category.chip.icon }}
+                      </v-icon>
+                      <span class="font-weight-bold">{{ previousList.category.name }}</span>
+                    </v-chip>
+                  </span>
+                  list with unchecked items:
+                </h5>
+                <ListCard :list="previousList" />
+              </div>
+              <!-- end:: Check Previous List for unchecked Items -->
+
               <!-- start:: Submit -->
               <div class="my-10">
                 <v-btn class="my-3" color="success" block :disabled="$v.$invalid" @click="onSubmit">
@@ -62,10 +80,6 @@
                 </v-btn>
               </div>
               <!-- end:: Submit -->
-
-              <div v-if="previousList">
-                <ListCard :list="previousList" />
-              </div>
             </form>
           </div>
           <!-- end:: New List form -->
