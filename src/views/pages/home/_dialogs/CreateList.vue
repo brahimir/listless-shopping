@@ -1,18 +1,4 @@
-<style lang="scss" scoped>
-.isChecked {
-  text-decoration: line-through;
-}
-
-.v-sheet {
-  margin-top: 0.25rem;
-  margin-bottom: 0.25rem;
-}
-
-.checked {
-  background-color: #161616;
-  border: 1px solid #161616;
-}
-</style>
+<style lang="scss" scoped></style>
 
 <template>
   <div class="mx-3 mb-10">
@@ -68,14 +54,18 @@
 
               <!-- start:: Submit -->
               <div class="my-10">
-                <v-btn class="my-3" color="success" block @click="onSubmit">
-                  create
+                <v-btn class="my-3" color="success" block :disabled="$v.$invalid" @click="onSubmit">
+                  create list
                 </v-btn>
                 <v-btn class="my-3" color="error" block outlined @click="dialog = false">
                   cancel
                 </v-btn>
               </div>
               <!-- end:: Submit -->
+
+              <div v-if="previousList">
+                <ListCard :list="previousList" />
+              </div>
             </form>
           </div>
           <!-- end:: New List form -->
@@ -97,27 +87,14 @@ import { CATEGORIES } from "@/.env/constants.categories";
 import { List } from "@/views/pages/home/_models/list.model";
 // Services
 import HomeService from "@/views/pages/home/Home.service";
-
-const defaultList: List = {
-  category: {
-    index: "food",
-    name: "food",
-    image: "food.jpg",
-    chip: {
-      icon: "mdi-food-apple",
-      color: "green"
-    }
-  },
-  name: "default list",
-  items: [],
-  isActive: true,
-  createdOn: new Date().toISOString()
-};
+// Components
+import ListCard from "@/components/ListCard.vue";
 
 export default Vue.extend({
-  mixins: [validationMixin],
-  props: ["userId", "userLists"],
   name: "CreateList",
+  components: { ListCard },
+  props: ["userId", "userLists"],
+  mixins: [validationMixin],
   validations: {
     name: { required, maxLength: maxLength(20) },
     category: { required }
@@ -127,9 +104,9 @@ export default Vue.extend({
     isLoading: false,
     dialog: false,
     name: "",
-    category: CATEGORIES[0],
+    category: null,
     categories: CATEGORIES,
-    previousList: defaultList
+    previousList: null
   }),
 
   computed: {
@@ -139,6 +116,7 @@ export default Vue.extend({
       !this.$v.category.required && errors.push("enter a list category");
       return errors;
     },
+
     nameErrors: function(): string[] {
       const errors: string[] = [];
       if (!this.$v.name.$dirty) return errors;
@@ -154,8 +132,23 @@ export default Vue.extend({
       this.$v.$touch();
       if (this.$v.$anyError) return;
 
+      let newListCategory: any;
+      if (!this.category) {
+        newListCategory = {
+          index: null,
+          name: null,
+          image: null,
+          chip: {
+            icon: null,
+            color: null
+          }
+        };
+      } else {
+        newListCategory = this.category;
+      }
+
       const newList: List = {
-        category: this.category,
+        category: newListCategory,
         name: this.name,
         items: [],
         isActive: false,
@@ -186,8 +179,8 @@ export default Vue.extend({
         (data: any) => {
           if (!data) console.log("Add an error message here!");
           else {
+            data[0].isActive = true; // Set the isActive to true so the card is automatically expanded for viewing.
             this.previousList = data[0];
-            console.log(this.previousList);
           }
         }
       );
