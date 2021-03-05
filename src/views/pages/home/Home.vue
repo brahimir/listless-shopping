@@ -2,29 +2,7 @@
 todo - when adding, removing, and checking items - need to individually update them on server instead of
 overwriting the array.
 
-<style lang="scss" scoped>
-.isChecked {
-  text-decoration: line-through;
-}
-
-.v-sheet {
-  margin-top: 0.25rem;
-  margin-bottom: 0.25rem;
-}
-
-.checked {
-  background-color: #161616;
-  border: 1px solid #161616;
-}
-
-.spinner-container {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-}
-</style>
+<style lang="scss" scoped></style>
 
 <template>
   <div>
@@ -44,120 +22,16 @@ overwriting the array.
           <!-- end:: Add a new List -->
 
           <!-- start:: User Lists -->
-          <div>
-            <v-card v-for="list in lists" :key="list.name" class="my-7" color="grey darken-4" tile>
-              <v-img
-                height="150"
-                :src="require(`@/assets/media/category-images/${list.category.image}`)"
-              ></v-img>
-              <v-card-title>
-                {{ list.name }}
-              </v-card-title>
-
-              <v-card-subtitle>created on {{ list.createdOn | moment }}</v-card-subtitle>
-
-              <v-card-actions>
-                <v-chip :color="list.category.chip.color">
-                  <v-icon class="mr-1" small color="white">
-                    {{ list.category.chip.icon }}
-                  </v-icon>
-                  <span class="font-weight-bold">{{ list.category.name }}</span>
-                </v-chip>
-                <v-spacer></v-spacer>
-
-                <v-btn icon @click="collapseLists(list)">
-                  <v-icon>{{ list.isActive ? "mdi-chevron-up" : "mdi-chevron-down" }}</v-icon>
-                </v-btn>
-              </v-card-actions>
-
-              <v-expand-transition>
-                <div v-show="list.isActive">
-                  <v-divider></v-divider>
-
-                  <v-card-text>
-                    <!-- start:: Add Items to List -->
-                    <v-container fluid>
-                      <v-row>
-                        <v-col cols="12">
-                          <v-input @keyup.enter.native="addItem(input, list)">
-                            <v-text-field label="add some items..." v-model="input">
-                              <v-icon
-                                color="green"
-                                slot="append"
-                                @click="addItem(input, list)"
-                                :disabled="!input || isLoading"
-                              >
-                                mdi-plus
-                              </v-icon>
-                            </v-text-field>
-                          </v-input>
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                    <!-- end:: Add Items to List -->
-
-                    <!-- start:: Items List -->
-                    <div>
-                      <v-list
-                        v-for="(item, index) in list.items"
-                        :key="index"
-                        :class="{ checked: item.checked }"
-                        outlined
-                      >
-                        <v-list-item>
-                          <!-- start:: List Item Checkbox -->
-                          <v-list-item-action>
-                            <v-checkbox
-                              color="secondary"
-                              v-model="item.checked"
-                              @click="toggleItem(item, list)"
-                            ></v-checkbox>
-                          </v-list-item-action>
-                          <!-- end:: List Item Checkbox -->
-
-                          <!-- start:: List Item Content -->
-                          <v-list-item-content>
-                            <v-list-item-title
-                              :class="{ isChecked: item.checked, 'grey--text': item.checked }"
-                            >
-                              {{ item.name | lowercase }}
-                            </v-list-item-title>
-                          </v-list-item-content>
-                          <!-- end:: List Item Content -->
-
-                          <!-- start:: Remove Item -->
-                          <v-btn v-if="!item.checked" icon color="red" @click="removeItem(item, list)">
-                            <v-icon>mdi-delete</v-icon>
-                          </v-btn>
-                          <v-btn v-else icon color="grey" @click="removeItem(item, list)">
-                            <v-icon>mdi-delete</v-icon>
-                          </v-btn>
-                          <!-- end:: Remove Item -->
-                        </v-list-item>
-                      </v-list>
-                    </div>
-                    <!-- end:: Items List -->
-
-                    <!-- start:: Archive List (with confirmation) -->
-                    <div class="mt-15 mb-6 mx-4">
-                      <ConfirmationDialog
-                        :width="500"
-                        :dialogButtonText="'archive list'"
-                        :dialogButtonColor="'red'"
-                        :dialogButtonIsBlock="true"
-                        :dialogButtonIsTile="false"
-                        :headerTitle="'confirmation'"
-                        :confirmationMessage="'are you sure you want to archive this list?'"
-                        :acceptText="'yes'"
-                        :declineText="'no'"
-                        @is-confirmed="archiveList(list)"
-                      />
-                    </div>
-                    <!-- end:: Archive List (with confirmation) -->
-                  </v-card-text>
-                </div>
-              </v-expand-transition>
-            </v-card>
+          <div v-for="list in lists" :key="list.name">
+            <ListCard
+              :list="list"
+              @add-item="addItem"
+              @remove-item="removeItem"
+              @toggle-item="toggleItem"
+              @update-lists="updateLists"
+              @archive-list="archiveList"
+              @collapse-lists="collapseLists"
+            />
           </div>
           <!-- end:: User Lists -->
         </div>
@@ -173,112 +47,16 @@ overwriting the array.
         <div v-if="lists">
           <h2 class="text-center mb-10">sample list</h2>
           <!-- start:: User Lists -->
-          <div>
-            <v-card v-for="list in lists" :key="list.name" class="my-7" color="grey darken-4" tile>
-              <v-img
-                height="150"
-                :src="require(`@/assets/media/category-images/${list.category.image}`)"
-              ></v-img>
-              <v-card-title>
-                {{ list.name }}
-              </v-card-title>
-
-              <v-card-subtitle>created on: {{ list.createdOn | moment }}</v-card-subtitle>
-
-              <v-card-actions>
-                <v-chip :color="list.category.chip.color">
-                  <v-icon class="mr-1" small color="white">
-                    {{ list.category.chip.icon }}
-                  </v-icon>
-                  <span class="font-weight-bold">{{ list.category.name }}</span>
-                </v-chip>
-                <v-spacer></v-spacer>
-
-                <v-btn icon @click="list.isActive = !list.isActive">
-                  <v-icon>{{ list.isActive ? "mdi-chevron-up" : "mdi-chevron-down" }}</v-icon>
-                </v-btn>
-              </v-card-actions>
-
-              <v-expand-transition>
-                <div v-show="list.isActive">
-                  <v-divider></v-divider>
-
-                  <v-card-text>
-                    <!-- start:: Add Items to List -->
-                    <v-container fluid>
-                      <v-row>
-                        <v-col cols="12">
-                          <v-input @keyup.enter.native="sampleAddItem(input, list)">
-                            <v-text-field label="add some items..." v-model="input">
-                              <v-icon
-                                color="green"
-                                slot="append"
-                                @click="sampleAddItem(input, list)"
-                                :disabled="!input || isLoading"
-                              >
-                                mdi-plus
-                              </v-icon>
-                            </v-text-field>
-                          </v-input>
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                    <!-- end:: Add Items to List -->
-
-                    <!-- start:: Items List -->
-                    <div>
-                      <v-list
-                        v-for="(item, index) in list.items"
-                        :key="index"
-                        :class="{ checked: item.checked }"
-                        outlined
-                      >
-                        <v-list-item>
-                          <!-- start:: List Item Checkbox -->
-                          <v-list-item-action>
-                            <v-checkbox
-                              color="secondary"
-                              v-model="item.checked"
-                              @click="sampleToggleItem(item, list)"
-                            ></v-checkbox>
-                          </v-list-item-action>
-                          <!-- end:: List Item Checkbox -->
-
-                          <!-- start:: List Item Content -->
-                          <v-list-item-content>
-                            <v-list-item-title
-                              :class="{ isChecked: item.checked, 'grey--text': item.checked }"
-                            >
-                              {{ item.name | lowercase }}
-                            </v-list-item-title>
-                          </v-list-item-content>
-                          <!-- end:: List Item Content -->
-
-                          <!-- start:: Remove Item -->
-                          <v-btn
-                            v-if="!item.checked"
-                            icon
-                            color="red"
-                            @click="sampleRemoveItem(item, list)"
-                          >
-                            <v-icon>mdi-delete</v-icon>
-                          </v-btn>
-                          <v-btn v-else icon color="grey" @click="sampleRemoveItem(item, list)">
-                            <v-icon>mdi-delete</v-icon>
-                          </v-btn>
-                          <!-- end:: Remove Item -->
-                        </v-list-item>
-                      </v-list>
-                    </div>
-                    <!-- end:: Items List -->
-
-                    <div class="mt-10">
-                      <v-btn @click="sampleClearList" color="error" block tile>clear list</v-btn>
-                    </div>
-                  </v-card-text>
-                </div>
-              </v-expand-transition>
-            </v-card>
+          <div v-for="list in lists" :key="list.name">
+            <ListCard
+              :lists="lists"
+              @add-item="addItem"
+              @remove-item="removeItem"
+              @toggle-item="toggleItem"
+              @update-lists="updateLists"
+              @archive-list="archiveList"
+              @collapse-lists="collapseLists"
+            />
           </div>
           <!-- end:: User Lists -->
         </div>
@@ -287,7 +65,7 @@ overwriting the array.
     </div>
 
     <!-- start:: Loading spinner -->
-    <div class="spinner-container">
+    <div class="page-center-spinner-container">
       <Spinner v-if="isLoading" :size="100" :width="7" :isCentered="true" />
     </div>
     <!-- end:: Loading spinner -->
@@ -309,8 +87,8 @@ import FiltersService from "../../../core/services/filters.service";
 import moment from "moment";
 // Components
 import Spinner from "@/components/content/Spinner.vue";
+import ListCard from "@/components/ListCard.vue";
 import CreateList from "@/views/pages/home/_dialogs/CreateList.vue";
-import ConfirmationDialog from "@/components/content/_dialogs/ConfirmationDialog.vue";
 
 // Default list for non currentUser.
 const defaultLists: List[] | null = [
@@ -347,7 +125,7 @@ const defaultLists: List[] | null = [
 const defaultArchivedLists: List[] = [];
 
 export default Vue.extend({
-  components: { Spinner, CreateList, ConfirmationDialog },
+  components: { Spinner, ListCard, CreateList },
   name: "Home",
 
   data: () => ({
@@ -359,9 +137,6 @@ export default Vue.extend({
   }),
 
   methods: {
-    sampleMethod: function(value: number): void {
-      console.log(value);
-    },
     // * User List functions
     /**
      * Adds User input to the specified list.
@@ -401,7 +176,7 @@ export default Vue.extend({
     },
 
     /**
-     * todo
+     * todo - shifts item successfully, but "checks" the next item in the list.
      * Toggles an item as checked or unchecked (functionality will shift the item to the bottom of the
      * list).
      *
@@ -511,13 +286,11 @@ export default Vue.extend({
      */
     collapseLists: function(list: List): void {
       list.isActive = !list.isActive;
-
       this.lists.forEach(element => {
         if (this.lists.indexOf(element) != this.lists.indexOf(list)) {
           element.isActive = false;
         }
       });
-
       this.updateLists();
     },
 
@@ -583,6 +356,7 @@ export default Vue.extend({
           createdOn: new Date().toISOString()
         }
       ];
+      this.sampleUpdateLists();
     }
   },
 
