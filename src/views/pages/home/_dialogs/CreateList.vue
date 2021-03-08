@@ -152,7 +152,7 @@ import HomeService from "@/views/pages/home/Home.service";
 import Spinner from "@/components/content/Spinner.vue";
 import ListCard from "@/components/ListCard.vue";
 
-let previousLists: List | null;
+let previousList: List | null;
 
 export default Vue.extend({
   name: "CreateList",
@@ -170,7 +170,7 @@ export default Vue.extend({
     name: "",
     category: null,
     categories: CATEGORIES,
-    previousList: previousLists,
+    previousList: previousList,
     usePreviousList: false
   }),
 
@@ -263,7 +263,10 @@ export default Vue.extend({
 
             lastList.isActive = true; // Set the isActive to true so the card is automatically expanded for viewing.
             lastList.items = uncheckedItems;
-            this.previousList = lastList;
+
+            // If the lastList has no unchecked items, don't return a previousList.
+            if (!lastList.items.length) this.previousList = null;
+            else this.previousList = lastList;
           }
         }
       );
