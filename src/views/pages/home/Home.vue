@@ -82,7 +82,7 @@ import { Item } from "./_models/item.model";
 import { List } from "./_models/list.model";
 // Services
 import HomeService from "./Home.service";
-import FiltersService from "../../../core/services/filters.service";
+import FiltersService from "@/core/services/filters.service";
 // Moment
 import moment from "moment";
 // Components
