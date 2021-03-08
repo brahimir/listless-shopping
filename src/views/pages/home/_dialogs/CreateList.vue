@@ -61,18 +61,58 @@
                       <v-icon class="mr-1" small color="white">
                         {{ previousList.category.chip.icon }}
                       </v-icon>
-                      <span class="font-weight-bold">{{ previousList.category.name }}</span>
+                      <span>{{ previousList.category.name }}</span>
                     </v-chip>
                   </span>
-                  list with unchecked items:
+                  list with <span class="font-weight-bold"><u>unchecked</u></span> items:
                 </h5>
-                <ListCard :list="previousList" />
+                <p class="mt-10">
+                  <v-icon small color="amber">
+                    mdi-star
+                  </v-icon>
+                  pro tip: you can modify the list below to help create a starting point for your new
+                  list!
+                </p>
+
+                <!-- start:: Previous List Card -->
+                <ListCard
+                  :isPreviousList="true"
+                  :list="previousList"
+                  @add-item="addItem"
+                  @remove-item="removeItem"
+                />
+                <!-- end:: Previous List Card -->
+
+                <v-container class="px-0" fluid>
+                  <v-checkbox v-model="usePreviousList">
+                    <template v-slot:label>
+                      <div>
+                        use this list to generate my new
+                        <span class="mx-1">
+                          <v-chip :color="category.chip.color">
+                            <v-icon class="mr-1" small color="white">
+                              {{ category.chip.icon }}
+                            </v-icon>
+                            <span>{{ category.name }}</span>
+                          </v-chip>
+                        </span>
+                        list
+                      </div>
+                    </template>
+                  </v-checkbox>
+                </v-container>
               </div>
               <!-- end:: Check Previous List for unchecked Items -->
 
               <!-- start:: Submit -->
               <div class="my-10">
-                <v-btn class="my-3" color="success" block :disabled="$v.$invalid" @click="onSubmit">
+                <v-btn
+                  class="my-3"
+                  color="success"
+                  block
+                  :disabled="$v.$invalid"
+                  @click="onSubmit(previousList)"
+                >
                   create list
                 </v-btn>
                 <v-btn class="my-3" color="error" block outlined @click="dialog = false">
@@ -84,6 +124,12 @@
           </div>
           <!-- end:: New List form -->
         </v-card>
+
+        <!-- start:: Loading spinner -->
+        <div v-if="isLoading" class="page-center-spinner-container">
+          <Spinner :size="100" :width="7" :isCentered="true" />
+        </div>
+        <!-- end:: Loading spinner -->
       </v-dialog>
     </v-row>
   </div>
@@ -98,15 +144,19 @@ import { required, maxLength } from "vuelidate/lib/validators";
 // Constants
 import { CATEGORIES } from "@/.env/constants.categories";
 // Models
+import { Item } from "../_models/item.model";
 import { List } from "@/views/pages/home/_models/list.model";
 // Services
 import HomeService from "@/views/pages/home/Home.service";
 // Components
+import Spinner from "@/components/content/Spinner.vue";
 import ListCard from "@/components/ListCard.vue";
+
+let previousLists: List | null;
 
 export default Vue.extend({
   name: "CreateList",
-  components: { ListCard },
+  components: { Spinner, ListCard },
   props: ["userId", "userLists"],
   mixins: [validationMixin],
   validations: {
@@ -120,7 +170,8 @@ export default Vue.extend({
     name: "",
     category: null,
     categories: CATEGORIES,
-    previousList: null
+    previousList: previousLists,
+    usePreviousList: false
   }),
 
   computed: {
@@ -141,11 +192,12 @@ export default Vue.extend({
   },
 
   methods: {
-    onSubmit: function(): void {
+    onSubmit: function(previousList: List): void {
       // Check form for errors.
       this.$v.$touch();
       if (this.$v.$anyError) return;
 
+      // Get the category of the new List.
       let newListCategory: any;
       if (!this.category) {
         newListCategory = {
@@ -161,6 +213,7 @@ export default Vue.extend({
         newListCategory = this.category;
       }
 
+      // Prepare newList.
       const newList: List = {
         category: newListCategory,
         name: this.name,
@@ -169,9 +222,14 @@ export default Vue.extend({
         createdOn: new Date().toISOString()
       };
 
+      // Check if User is using items from their previousList to populate their newList.
+      if (this.usePreviousList) newList.items = previousList.items;
+
+      // Copy props userLists to update and save to server.
       const localUserLists = JSON.parse(JSON.stringify(this.userLists));
       localUserLists.unshift(newList);
 
+      // Save userLists with their newList to server.
       this.isLoading = true;
       Promise.resolve(HomeService.updateUserLists(this.userId, localUserLists)).then(data => {
         // todo - maybe emit an event for success or fail, and display a snackbar message on Home
@@ -186,18 +244,69 @@ export default Vue.extend({
     },
 
     // todo - check lists within a certain time range - we don't want to suggest list items from ~6 months ago.
-
-    // todo - maybe refactor List displays into a Component on Home, so we can display the previous List here as well with the same interface.
     checkList: function(categoryIndex: string): void {
+      this.previousList = null;
+
       Promise.resolve(HomeService.getUserArchivedListsByCategory(this.userId, categoryIndex)).then(
         (data: any) => {
           if (!data) console.log("Add an error message here!");
+          if (!data.length) console.log("No previous lists of this category exist!");
           else {
-            data[0].isActive = true; // Set the isActive to true so the card is automatically expanded for viewing.
-            this.previousList = data[0];
+            const lastList: List = data[0];
+            const uncheckedItems: Item[] = [];
+
+            lastList.items.forEach((element: Item) => {
+              if (!element.checked) {
+                uncheckedItems.push(element);
+              }
+            });
+
+            lastList.isActive = true; // Set the isActive to true so the card is automatically expanded for viewing.
+            lastList.items = uncheckedItems;
+            this.previousList = lastList;
           }
         }
       );
+    },
+
+    // * List functions
+    /**
+     * Adds User input to the specified list.
+     *
+     * @param input The User's input
+     * @param list  The List to add to.
+     */
+    addItem: function(input: string | null, list: List): void {
+      if (!list) return;
+      if (!input) return;
+      else {
+        const newItem: Item = {
+          name: input.toLowerCase(),
+          checked: false
+        };
+
+        list.items.unshift(newItem);
+        input = null;
+      }
+    },
+
+    /**
+     * Removes an Item from the specified list.
+     *
+     * @param item The Item to remove.
+     * @param list  The List to remove from.
+     */
+    removeItem: function(item: Item, list: List): void {
+      if (!list) return;
+      else {
+        const index: number = list.items.indexOf(item);
+        list.items.splice(index, 1);
+      }
+    },
+
+    // todo - calculate date difference b/w previousList and current date when displaying to User.
+    dateDifferencePreviousList: function(): void {
+      // todo
     }
   }
 });
