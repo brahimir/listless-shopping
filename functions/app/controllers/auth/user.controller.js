@@ -166,7 +166,7 @@ exports.getUserArchivedListsByCategory = function(req, res) {
     const archivedListsByCategoryIndex = [];
     user.profile.archived_lists.forEach(element => {
       if (element.category.index === categoryIndex) {
-        archivedListsByCategoryIndex.unshift(element);
+        archivedListsByCategoryIndex.push(element);
       }
     });
 
