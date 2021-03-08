@@ -1,9 +1,16 @@
 @import "./layout/variables";
 
+// list-less Colors
 .ll-white {
   color: $ll-white;
 }
 
+// Labels
+label {
+  margin-bottom: 0 !important;
+}
+
+// Spinners
 .page-center-spinner-container {
   position: absolute;
   left: 50%;
