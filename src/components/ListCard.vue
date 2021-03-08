@@ -16,31 +16,42 @@
 
 <template>
   <div>
+    <!-- start:: Card -->
     <v-card class="my-7" color="grey darken-4" tile>
+      <!-- start:: Card Image -->
       <v-img
         height="150"
         :src="require(`@/assets/media/category-images/${list.category.image}`)"
       ></v-img>
-      <v-card-title>
-        {{ list.name }}
-      </v-card-title>
+      <!-- end:: Card Image -->
 
-      <v-card-subtitle>created on {{ list.createdOn | moment }}</v-card-subtitle>
+      <!-- start:: Card Header -->
+      <div>
+        <v-card-title>
+          {{ list.name }}
+        </v-card-title>
 
+        <v-card-subtitle>created on {{ list.createdOn | moment }}</v-card-subtitle>
+      </div>
+      <!-- end:: Card Header -->
+
+      <!-- start:: Card Actions -->
       <v-card-actions>
         <v-chip :color="list.category.chip.color">
           <v-icon class="mr-1" small color="white">
             {{ list.category.chip.icon }}
           </v-icon>
-          <span class="font-weight-bold">{{ list.category.name }}</span>
+          <span>{{ list.category.name }}</span>
         </v-chip>
         <v-spacer></v-spacer>
 
-        <v-btn icon @click="collapseLists(list)">
+        <v-btn v-if="!isPreviousList" icon @click="collapseLists(list)">
           <v-icon>{{ list.isActive ? "mdi-chevron-up" : "mdi-chevron-down" }}</v-icon>
         </v-btn>
       </v-card-actions>
+      <!-- end:: Card Actions -->
 
+      <!-- start:: Card Expansion -->
       <v-expand-transition>
         <div v-show="list.isActive">
           <v-divider></v-divider>
@@ -95,12 +106,14 @@
                   <!-- end:: List Item Content -->
 
                   <!-- start:: Remove Item -->
-                  <v-btn v-if="!item.checked" icon color="red" @click="removeItem(item, list)">
-                    <v-icon>mdi-delete</v-icon>
-                  </v-btn>
-                  <v-btn v-else icon color="grey" @click="removeItem(item, list)">
-                    <v-icon>mdi-delete</v-icon>
-                  </v-btn>
+                  <div>
+                    <v-btn v-if="!item.checked" icon color="red" @click="removeItem(item, list)">
+                      <v-icon>mdi-delete</v-icon>
+                    </v-btn>
+                    <v-btn v-else icon color="grey" @click="removeItem(item, list)">
+                      <v-icon>mdi-delete</v-icon>
+                    </v-btn>
+                  </div>
                   <!-- end:: Remove Item -->
                 </v-list-item>
               </v-list>
@@ -108,7 +121,7 @@
             <!-- end:: Items List -->
 
             <!-- start:: Archive List (with confirmation) -->
-            <div class="mt-15 mb-6 mx-4">
+            <div v-if="!isPreviousList" class="mt-15 mb-6 mx-4">
               <ConfirmationDialog
                 :width="500"
                 :dialogButtonText="'archive list'"
@@ -126,7 +139,9 @@
           </v-card-text>
         </div>
       </v-expand-transition>
+      <!-- end:: Card Expansion -->
     </v-card>
+    <!-- end:: Card -->
   </div>
 </template>
 
@@ -146,11 +161,10 @@ import ConfirmationDialog from "@/components/content/_dialogs/ConfirmationDialog
 export default Vue.extend({
   name: "ListCard",
   components: { ConfirmationDialog },
-  props: ["list"],
+  props: ["isPreviousList", "list"],
 
   data: () => ({
     isLoading: false,
-    propsLists: [],
     input: null
   }),
 
@@ -169,7 +183,7 @@ export default Vue.extend({
     /**
      * Emit a remove-item event to Home; Removes an Item from the specified list.
      *
-     * @param item The Item to remove.
+     * @param item  The Item to remove.
      * @param list  The List to remove from.
      */
     removeItem: function(item: Item, list: List): void {
@@ -177,11 +191,10 @@ export default Vue.extend({
     },
 
     /**
-     * todo - shifts item successfully, but "checks" the next item in the list.
-     * Emit a toggle-item event to Home; Toggles an item as checked or unchecked (functionality will shift the item to the bottom of the
+     * Emit a toggle-item event to Home; Toggles an item as checked or unchecked.
      * list).
      *
-     * @param item The Item to toggle.
+     * @param item  The Item to toggle.
      * @param list  The List the Item belongs to.
      */
     toggleItem: function(item: Item, list: List): void {
@@ -197,7 +210,8 @@ export default Vue.extend({
 
     /**
      * Emit a archive-list event to Home; Archives a User's List on the server.
-     * todo - have a confirmation dialog first.
+     *
+     * @param list  The List to archive.
      */
     archiveList: function(list: List): void {
       this.$emit("archive-list", list);
@@ -206,7 +220,7 @@ export default Vue.extend({
     /**
      * Emit a collapse-lists event to Home; Collapses other lists while a new list is opened.
      *
-     * @param list The list that was selected and opened.
+     * @param list  The list that was selected and opened.
      */
     collapseLists: function(list: List): void {
       this.$emit("collapse-lists", list);
