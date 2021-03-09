@@ -49,7 +49,7 @@ overwriting the array.
           <!-- start:: User Lists -->
           <div v-for="list in lists" :key="list.name">
             <ListCard
-              :lists="lists"
+              :list="list"
               @add-item="addItem"
               @remove-item="removeItem"
               @toggle-item="toggleItem"
@@ -252,6 +252,7 @@ export default Vue.extend({
       // If there is no currentUser, fetch the sampleList from localstorage.
       if (!this.currentUser) {
         this.sampleGetLists();
+        console.log(this.lists);
         this.isLoading = false;
         return;
       }
