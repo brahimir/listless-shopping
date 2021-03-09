@@ -50,11 +50,11 @@ overwriting the array.
           <div v-for="list in lists" :key="list.name">
             <ListCard
               :list="list"
-              @add-item="addItem"
-              @remove-item="removeItem"
-              @toggle-item="toggleItem"
-              @update-lists="updateLists"
-              @archive-list="archiveList"
+              @add-item="sampleAddItem"
+              @remove-item="sampleRemoveItem"
+              @toggle-item="sampleToggleItem"
+              @update-lists="sampleUpdateLists"
+              @archive-list="sampleClearList"
               @collapse-lists="collapseLists"
             />
           </div>
@@ -209,6 +209,37 @@ export default Vue.extend({
     },
 
     /**
+     * Retreives the User's lists from the server.
+     */
+    getAllLists: function(): void {
+      this.isLoading = true;
+
+      // If there is no currentUser, fetch the sampleList from localstorage.
+      if (!this.currentUser) {
+        this.sampleGetLists();
+        this.isLoading = false;
+        return;
+      }
+
+      // Get all User's Lists.
+      Promise.resolve(HomeService.getAllUserLists(this.currentUser._id)).then((data: List[]) => {
+        this.lists = data;
+
+        // Set isActive to false for each List; easier to view all Lists when they're collapsed.
+        this.lists.forEach(element => {
+          element.isActive = false;
+        });
+        this.isLoading = false;
+      });
+
+      // Get all User's ARCHIVED Lists.
+      Promise.resolve(HomeService.getAllUserArchivedLists(this.currentUser._id)).then((data: List[]) => {
+        this.archivedLists = data;
+        this.isLoading = false;
+      });
+    },
+
+    /**
      * Archives a User's List on the server.
      * todo - have a confirmation dialog first.
      */
@@ -239,37 +270,6 @@ export default Vue.extend({
           console.log("Add an error message here!");
         }
         this.updateLists();
-        this.isLoading = false;
-      });
-    },
-
-    /**
-     * Retreives the User's lists from the server.
-     */
-    getAllLists: function(): void {
-      this.isLoading = true;
-
-      // If there is no currentUser, fetch the sampleList from localstorage.
-      if (!this.currentUser) {
-        this.sampleGetLists();
-        this.isLoading = false;
-        return;
-      }
-
-      // Get all User's Lists.
-      Promise.resolve(HomeService.getAllUserLists(this.currentUser._id)).then((data: List[]) => {
-        this.lists = data;
-
-        // Set isActive to false for each List; easier to view all Lists when they're collapsed.
-        this.lists.forEach(element => {
-          element.isActive = false;
-        });
-        this.isLoading = false;
-      });
-
-      // Get all User's ARCHIVED Lists.
-      Promise.resolve(HomeService.getAllUserArchivedLists(this.currentUser._id)).then((data: List[]) => {
-        this.archivedLists = data;
         this.isLoading = false;
       });
     },
@@ -307,7 +307,6 @@ export default Vue.extend({
       this.sampleUpdateLists();
 
       this.input = null;
-      // todo
     },
 
     sampleRemoveItem: function(item: Item, list: List): void {
@@ -320,7 +319,6 @@ export default Vue.extend({
     },
 
     sampleToggleItem: function(): void {
-      // todo
       this.sampleUpdateLists();
     },
 
