@@ -252,7 +252,6 @@ export default Vue.extend({
       // If there is no currentUser, fetch the sampleList from localstorage.
       if (!this.currentUser) {
         this.sampleGetLists();
-        console.log(this.lists);
         this.isLoading = false;
         return;
       }
