@@ -14,4 +14,5 @@ export interface List {
   items: Item[];
   isActive: boolean;
   createdOn: string; // ISO string
+  archivedOn: string | null;
 }
