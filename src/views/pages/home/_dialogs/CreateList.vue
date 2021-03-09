@@ -55,7 +55,7 @@
               <!-- start:: Check Previous List for unchecked Items -->
               <div v-if="previousList" class="mt-5">
                 <h5>
-                  we found a previous
+                  your last
                   <span class="mx-1">
                     <v-chip :color="previousList.category.chip.color">
                       <v-icon class="mr-1" small color="white">
@@ -64,13 +64,13 @@
                       <span>{{ previousList.category.name }}</span>
                     </v-chip>
                   </span>
-                  list with <span class="font-weight-bold"><u>unchecked</u></span> items:
+                  list had some <span class="font-weight-bold"><u>unchecked</u></span> items:
                 </h5>
                 <p class="mt-10">
                   <v-icon small color="amber">
                     mdi-star
                   </v-icon>
-                  pro tip: you can modify the list below to help create a starting point for your new
+                  pro tip - you can modify and use the list below to create a starting point for your new
                   list!
                 </p>
 
@@ -219,7 +219,8 @@ export default Vue.extend({
         name: this.name,
         items: [],
         isActive: false,
-        createdOn: new Date().toISOString()
+        createdOn: new Date().toISOString(),
+        archivedOn: null
       };
 
       // Check if User is using items from their previousList to populate their newList.

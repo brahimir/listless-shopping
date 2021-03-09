@@ -118,7 +118,8 @@ const defaultLists: List[] | null = [
     ],
     name: "sample list",
     isActive: true,
-    createdOn: new Date().toISOString()
+    createdOn: new Date().toISOString(),
+    archivedOn: null
   }
 ];
 
@@ -245,7 +246,10 @@ export default Vue.extend({
      */
     archiveList: function(list: List): void {
       const index: number = this.lists.indexOf(list);
-      const archivedList = this.lists.splice(index, 1)[0];
+      const archivedList: List = this.lists.splice(index, 1)[0];
+
+      archivedList.archivedOn = new Date().toISOString();
+      console.log(archivedList);
 
       // Check if the archived list of items is empty; we don't want to archive an empty list.
       this.isLoading = true;
@@ -351,7 +355,8 @@ export default Vue.extend({
           items: [],
           name: "sample list",
           isActive: true,
-          createdOn: new Date().toISOString()
+          createdOn: new Date().toISOString(),
+          archivedOn: null
         }
       ];
       this.sampleUpdateLists();
