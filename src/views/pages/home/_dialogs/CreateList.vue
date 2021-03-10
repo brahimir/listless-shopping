@@ -265,7 +265,7 @@ export default Vue.extend({
             lastList.isActive = true; // Set the isActive to true so the card is automatically expanded for viewing.
             lastList.items = uncheckedItems;
 
-            // If the lastList has no unchecked items, don't return a previousList.
+            // If the lastList has no unchecked items, return a null previousList.
             if (!lastList.items.length) this.previousList = null;
             else this.previousList = lastList;
           }
