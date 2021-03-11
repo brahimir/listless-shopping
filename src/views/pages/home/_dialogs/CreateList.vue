@@ -64,7 +64,7 @@
                       <span>{{ previousList.category.name }}</span>
                     </v-chip>
                   </span>
-                  list had some <span class="font-weight-bold"><u>unchecked</u></span> items:
+                  list had some <span class="font-weight-bold">unchecked</span> items:
                 </h5>
                 <p class="mt-10">
                   <v-icon small color="amber">
@@ -87,7 +87,7 @@
                   <v-checkbox v-model="usePreviousList">
                     <template v-slot:label>
                       <div>
-                        use this list to generate my new
+                        use the above list to generate my new
                         <span class="mx-1">
                           <v-chip :color="category.chip.color">
                             <v-icon class="mr-1" small color="white">
