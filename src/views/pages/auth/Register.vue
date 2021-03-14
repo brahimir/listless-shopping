@@ -103,9 +103,9 @@
 
         <v-row class="mt-10">
           <v-col cols="12">
-            <v-alert type="warning" dense text>
+            <v-alert type="warning" text>
               <h4 class="text-center">ATTENTION</h4>
-              <div class="text-center">
+              <div class="pr-2 text-center">
                 <div>
                   This application is currently <span class="font-weight-bold">in development.</span>
                 </div>

@@ -199,19 +199,8 @@ export default Vue.extend({
 
       // Get the category of the new List.
       let newListCategory: any;
-      if (!this.category) {
-        newListCategory = {
-          index: null,
-          name: null,
-          image: null,
-          chip: {
-            icon: null,
-            color: null
-          }
-        };
-      } else {
-        newListCategory = this.category;
-      }
+      if (!this.category) return;
+      else newListCategory = this.category;
 
       // Prepare newList.
       const newList: List = {
